@@ -112,7 +112,7 @@ def _build_cover(product_label: str, company_count: int, styles: dict) -> list:
         Paragraph(
             "본 보고서는 CPHI Japan 전시회 참가 기업 크롤링 및 Claude AI 심층조사를 통해 "
             "자동 생성된 바이어 발굴 분석 결과입니다. "
-            "성분/치료군 일치 기업 및 싱가포르·ASEAN 대상 사업자를 대상으로 수집하였습니다.",
+            "성분/치료군 일치 기업 및 UAE·중동·GCC 대상 사업자를 대상으로 수집하였습니다.",
             styles["body"],
         ),
         PageBreak(),

@@ -742,20 +742,20 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
 아래 JSON 형식으로만 응답하세요 (다른 텍스트 없이):
 {{
   "product_name": "제품명 (없으면 '미상')",
-  "ref_price_sgd": 숫자 또는 null,
-  "ref_price_currency": "SGD 또는 USD",
+  "ref_price_aed": 숫자 또는 null,
+  "ref_price_currency": "AED 또는 USD",
   "ref_price_text": "원문 가격 텍스트 (없으면 빈 문자열)",
-  "competitor_prices": [{{"name": "경쟁사명", "price_sgd": 숫자}}],
+  "competitor_prices": [{{"name": "경쟁사명", "price_aed": 숫자}}],
   "market_context": "시장 맥락 요약 (1-2문장)",
   "hs_code": "HS 코드 (없으면 빈 문자열)",
   "verdict": "수출 적합성 판정 (적합/조건부/부적합/미상)"
 }}
 
 가격 추출 규칙 (반드시 준수):
-- '참고 AED X.XX', 'SGD X.XX 수준', 'DPMQ ... 참고 AED X.XX' 등 SGD 금액이 포함된 모든 표현에서 숫자를 추출하세요.
-- 'PBS 방법론적 추산', '싱가포르 약가 아님' 같은 면책 문구가 있어도 SGD 숫자는 ref_price_sgd에 넣으세요.
-- 보고서의 '참고 가격', '가격 포지셔닝', 'DPMQ' 섹션을 특히 확인하세요.
-- USD($) 금액만 있다면 ref_price_sgd는 null로, ref_price_currency는 'USD'로, ref_price_text에 원문 그대로 기록하세요."""
+- 'DoH 참조가 AED X.XX', 'DHA AED X.XX', 'AED X.XX 수준' 등 AED 금액이 포함된 모든 표현에서 숫자를 추출하세요.
+- 'DoH/DHA 미등재', 'EDE 등록 예정' 같은 면책 문구가 있어도 AED 숫자는 ref_price_aed에 넣으세요.
+- 보고서의 '참고 가격', '가격 포지셔닝', 'DoH/DHA 참조가' 섹션을 특히 확인하세요.
+- USD($) 금액만 있다면 ref_price_aed는 null로, ref_price_currency는 'USD'로, ref_price_text에 원문 그대로 기록하세요."""
 
         extract_resp = await asyncio.to_thread(
             lambda: client.messages.create(
@@ -774,7 +774,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         except Exception:
             extracted = {
                 "product_name": "미상",
-                "ref_price_sgd": None,
+                "ref_price_aed": None,
                 "ref_price_text": "",
                 "market_context": "",
                 "verdict": "미상",
@@ -783,7 +783,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         _p2_ai_task["extracted"] = extracted
         await _emit({
             "phase": "p2_pipeline",
-            "message": f"가격 추출 완료 — 참조가: SGD {extracted.get('ref_price_sgd', '미확인')}",
+            "message": f"가격 추출 완료 — 참조가: AED {extracted.get('ref_price_aed', '미확인')}",
             "level": "success",
         })
 
@@ -823,9 +823,9 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         _p2_ai_task.update({"step": "ai_analysis", "step_label": "AI 최종 분석 중…"})
         await _emit({"phase": "p2_pipeline", "message": "Claude Haiku — 최종 가격 전략 분석", "level": "info"})
 
-        ref_price    = extracted.get("ref_price_sgd") or 0
+        ref_price    = extracted.get("ref_price_aed") or 0
         ref_display  = f"AED {float(ref_price):.2f}" if ref_price else (extracted.get("ref_price_text") or "미확인")
-        sgd_krw      = exchange_rates.get("aed_krw", exchange_rates.get("sgd_krw", 379.5))
+        aed_krw      = exchange_rates.get("aed_krw", 379.5)
         market_label = "공공 시장 (Rafed/SEHA 조달 채널)" if market == "public" else "민간 시장 (두바이·아부다비 병원·약국 채널)"
         verdict_src  = extracted.get("verdict", "미상")
         competitor_json = json.dumps(extracted.get("competitor_prices", []), ensure_ascii=False)
@@ -839,7 +839,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
 - 참조가 원문: {extracted.get('ref_price_text', '없음')}
 - HS 코드: {extracted.get('hs_code', '미상')}
 - 시장: {market_label}
-- 현재 환율: 1 AED = {sgd_krw:.2f} KRW (실시간 Yahoo Finance, AED 페그제)
+- 현재 환율: 1 AED = {aed_krw:.2f} KRW (실시간 Yahoo Finance, AED 페그제)
 - 경쟁사 가격: {competitor_json}
 - 시장 맥락: {extracted.get('market_context', '정보 없음')}
 
@@ -847,17 +847,17 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
 1. UAE(아랍에미리트) 제약 시장의 특성, 판정 결과, 시장 구분을 종합해 최종 수출 권고가를 산정하세요.
 2. 시나리오는 공격·평균·보수 3개로 구분하세요. 각 시나리오마다:
    - 가격 근거·포지셔닝 전략·적합 상황을 포함한 한 문단(3-4문장)으로 reason을 작성하세요.
-   - 구체적인 계산식을 formula 필드에 작성하세요 (예: SGD 9.87 × 0.85 = SGD 8.39).
+   - 구체적인 계산식을 formula 필드에 작성하세요 (예: AED 36.72 × 0.85 = AED 31.21).
 3. rationale은 3-4문장으로 시장 근거·판정 근거·리스크를 포함해 서술하세요.
 
 아래 JSON 형식으로만 응답하세요 (다른 텍스트 없이):
 {{
-  "final_price_sgd": 숫자,
+  "final_price_aed": 숫자,
   "rationale": "산정 이유 3-4문장",
   "scenarios": [
-    {{"name": "공격", "price_sgd": 숫자, "reason": "저마진 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식 (예: SGD 9.87 × 0.85 = SGD 8.39)"}},
-    {{"name": "평균", "price_sgd": 숫자, "reason": "중간 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식"}},
-    {{"name": "보수", "price_sgd": 숫자, "reason": "고마진 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식"}}
+    {{"name": "공격", "price_aed": 숫자, "reason": "저마진 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식 (예: AED 36.72 × 0.85 = AED 31.21)"}},
+    {{"name": "평균", "price_aed": 숫자, "reason": "중간 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식"}},
+    {{"name": "보수", "price_aed": 숫자, "reason": "고마진 포지셔닝 정의·근거·적합 상황을 포함한 한 문단", "formula": "계산식"}}
   ]
 }}
 
@@ -880,25 +880,25 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         except Exception:
             final_est = (ref_price * 0.30) if ref_price else 0
             analysis = {
-                "final_price_sgd": round(final_est, 2),
+                "final_price_aed": round(final_est, 2),
                 "rationale": "AI 응답 파싱 중 오류가 발생했습니다. 기본값 30% 비율로 산정합니다.",
                 "scenarios": [
-                    {"name": "공격", "price_sgd": round(final_est * 0.88, 2),
+                    {"name": "공격", "price_aed": round(final_est * 0.88, 2),
                      "reason": "저마진 포지셔닝 — 시장 진입 초기, 자사가 손해를 감수하며 가격경쟁력을 앞세워 점유율을 선점합니다.",
-                     "formula": f"SGD {final_est:.2f} × 0.88 = SGD {round(final_est * 0.88, 2):.2f}"},
-                    {"name": "평균", "price_sgd": round(final_est, 2),
+                     "formula": f"AED {final_est:.2f} × 0.88 = AED {round(final_est * 0.88, 2):.2f}"},
+                    {"name": "평균", "price_aed": round(final_est, 2),
                      "reason": "중간 포지셔닝 — 리스크와 마진의 균형을 유지하는 기본 산정가입니다.",
-                     "formula": f"SGD {final_est:.2f} (기준가 그대로)"},
-                    {"name": "보수", "price_sgd": round(final_est * 1.12, 2),
+                     "formula": f"AED {final_est:.2f} (기준가 그대로)"},
+                    {"name": "보수", "price_aed": round(final_est * 1.12, 2),
                      "reason": "고마진 포지셔닝 — 자사 제품이 시장 내 자리를 잡은 이후 마진율을 높여 이익 확대를 노립니다.",
-                     "formula": f"SGD {final_est:.2f} × 1.12 = SGD {round(final_est * 1.12, 2):.2f}"},
+                     "formula": f"AED {final_est:.2f} × 1.12 = AED {round(final_est * 1.12, 2):.2f}"},
                 ],
             }
 
         _p2_ai_task["analysis"] = analysis
         await _emit({
             "phase": "p2_pipeline",
-            "message": f"최종 분석 완료 — SGD {analysis.get('final_price_sgd', 0):.2f}",
+            "message": f"최종 분석 완료 — AED {analysis.get('final_price_aed', 0):.2f}",
             "level": "success",
         })
 
@@ -914,7 +914,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         _reports_dir_p2.mkdir(parents=True, exist_ok=True)
 
         _safe = _re2.sub(r"[^\w가-힣]", "_", extracted.get("product_name", "product"))[:30] or "product"
-        _pdf_name_p2 = f"sg_p2_{_safe}_{_ts_p2}.pdf"
+        _pdf_name_p2 = f"uae_p2_{_safe}_{_ts_p2}.pdf"
         _pdf_path_p2 = _reports_dir_p2 / _pdf_name_p2
 
         # AI 시나리오 필드명 정규화 (PDF generator는 label/price 사용)
@@ -923,7 +923,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
         for sc in raw_scenarios:
             norm_scenarios.append({
                 "label":   sc.get("name", sc.get("label", "")),
-                "price":   sc.get("price_sgd", sc.get("price", 0)),
+                "price":   sc.get("price_aed", sc.get("price", 0)),
                 "reason":  sc.get("reason", ""),
                 "formula": sc.get("formula", ""),
             })
@@ -932,7 +932,7 @@ async def _run_p2_ai_pipeline(report_path: str, market: str) -> None:
             "product_name": extracted.get("product_name", "미상"),
             "verdict":      verdict_src,
             "seg_label":    market_label,
-            "base_price":   analysis.get("final_price_sgd", 0),
+            "base_price":   analysis.get("final_price_aed", 0),
             "formula_str":  "",
             "mode_label":   "AI 분석 (Claude Haiku)",
             "scenarios":    norm_scenarios,
@@ -1065,13 +1065,13 @@ async def keys_status() -> dict[str, Any]:
 
 @app.get("/api/datasource/status")
 async def datasource_status() -> JSONResponse:
-    """Supabase 연결 상태, KUP 품목 수, HSA 컨텍스트 출처 반환."""
+    """Supabase 연결 상태, KUP 품목 수, EDE 컨텍스트 출처 반환."""
     try:
         from utils.db import get_client, fetch_kup_products
         kup_rows = fetch_kup_products("UAE")
         kup_count = len(kup_rows)
 
-        # HSA 컨텍스트 테이블 점검
+        # EDE 컨텍스트 테이블 점검
         sb = get_client()
         ctx_count = 0
         context_source = "없음"
