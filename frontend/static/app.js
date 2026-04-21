@@ -500,8 +500,8 @@ function setP2AiSeg(seg) {
   const desc = document.getElementById('p2-ai-seg-desc');
   if (desc) {
     desc.textContent = _p2AiSeg === 'public'
-      ? '공공 시장: ALPS 조달청 채널 · 27개 공공기관 통합구매 기준'
-      : '민간 시장: 병원·약국·체인 채널 중심 유통 구조 기준';
+      ? '공공 시장: Rafed/SEHA 조달 채널 · DoH·DHA 공공병원 통합 조달 기준'
+      : '민간 시장: 두바이·아부다비 병원·약국·체인 채널 중심 유통 구조 기준';
   }
 }
 
@@ -1805,12 +1805,14 @@ let _p3PdfName   = null;
 
 // P1 product_key → 표시 레이블 (P3 연동용)
 const P3_PRODUCT_LABELS = {
-  UY_cilostazol_cr_200:    'Cilostazol CR · 200mg SR (1일 1회)',
-  UY_ciloduo_cilosta_rosuva: 'Ciloduo · Cilostazol + Rosuvastatin',
-  UY_rosumeg_combigel:     'Rosumeg Combigel · Rosuvastatin + Omega-3',
-  UY_atmeg_combigel:       'Atmeg Combigel · Atorvastatin + Omega-3',
-  UY_gastiin_cr_mosapride: 'Gastiin CR · Mosapride Citrate 15mg',
-  UY_omethyl_omega3_2g:    'Omethyl Cutielet · Omega-3 EE 2g',
+  UAE_sereterol_activair:      'Sereterol Activair · Fluticasone + Salmeterol',
+  UAE_hydrine_hydroxyurea_500: 'Hydrine · Hydroxyurea 500mg',
+  UAE_gadvoa_gadobutrol_604:   'Gadvoa Inj. · Gadobutrol 604.72mg',
+  UAE_rosumeg_combigel:        'Rosumeg Combigel · Rosuvastatin + Omega-3',
+  UAE_atmeg_combigel:          'Atmeg Combigel · Atorvastatin + Omega-3',
+  UAE_ciloduo_cilosta_rosuva:  'Ciloduo · Cilostazol + Rosuvastatin',
+  UAE_gastiin_cr_mosapride:    'Gastiin CR · Mosapride Citrate 15mg',
+  UAE_omethyl_omega3_2g:       'Omethyl Cutielet · Omega-3 EE 2g',
 };
 
 /** P1 품목 선택 변경 시 P3 연동 레이블 갱신 */
@@ -2160,23 +2162,9 @@ async function loadAhpPartners() {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   §13. Leaflet 지도 초기화 (우루과이)
+   §13. Leaflet 지도 초기화 (UAE — index.html 인라인 스크립트에서 처리)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-
-(function initUyMap() {
-  const el = document.getElementById('uy-map');
-  if (!el || typeof L === 'undefined') return;
-  const map = L.map('uy-map', { zoomControl: true, scrollWheelZoom: false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
-    maxZoom: 10,
-  }).addTo(map);
-  map.setView([-32.5228, -55.7658], 6);
-  L.marker([-34.9011, -56.1645])
-    .addTo(map)
-    .bindPopup('<b>몬테비데오</b><br>우루과이 수도 · 주요 약국 집중')
-    .openPopup();
-})();
+// UAE 지도는 index.html <script> 블록에서 두바이 좌표(25.2048, 55.2708)로 초기화됨
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    §14. 초기화
@@ -2185,7 +2173,7 @@ async function loadAhpPartners() {
 loadKeyStatus();        // API 키 배지
 loadExchange();         // 환율 즉시 로드
 setInterval(() => { loadExchange(); }, 10000);
-loadMacro();            // 우루과이 거시 지표 로드
+loadMacro();            // UAE 거시 지표 로드
 renderReportTab();      // 보고서 탭 초기 렌더
 initP2Strategy();       // 수출 가격 전략 초기화
 
@@ -2194,4 +2182,4 @@ initP2Strategy();       // 수출 가격 전략 초기화
   if (p1Select) p1Select.addEventListener('change', _syncP3ProductLabel);
   _syncP3ProductLabel();
 })();
-loadNews();             // 우루과이 시장 뉴스 즉시 로드
+loadNews();             // UAE 시장 뉴스 즉시 로드
