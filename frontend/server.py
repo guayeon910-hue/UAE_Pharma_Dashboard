@@ -16,7 +16,7 @@ from typing import Any, Optional
 ROOT = Path(__file__).resolve().parents[1]
 try:
     from dotenv import load_dotenv
-    load_dotenv(ROOT / ".env", override=True)
+    load_dotenv(ROOT / ".env", override=False)
 except ImportError:
     pass
 
@@ -426,19 +426,6 @@ async def _run_pipeline_for_product(product_key: str) -> None:
 
         task["pdf"] = _pdf_name
 
-        # 4. SG 양식 보고서 (DOCX + PDF)
-        task.update({"step": "sg_report", "step_label": "SG 양식 보고서 생성 중…"})
-        try:
-            from scripts.generate_sg_format_report import generate_all_reports, convert_to_pdf
-            sg_paths = await asyncio.to_thread(
-                generate_all_reports, result, None, None, _reports_dir / "sg_format"
-            )
-            sg_pdfs = await asyncio.to_thread(convert_to_pdf, sg_paths)
-            task["sg_pdfs"] = {k: str(v.name) for k, v in sg_pdfs.items()}
-        except Exception as e:
-            import logging
-            logging.getLogger("frontend.server").warning(f"SG format report failed: {e}")
-
         task.update({"status": "done", "step": "done", "step_label": "완료"})
         await _emit({"phase": "pipeline", "message": "파이프라인 완료", "level": "success"})
 
@@ -511,19 +498,6 @@ async def _run_custom_pipeline(trade_name: str, inn: str, dosage_form: str) -> N
         await asyncio.to_thread(render_pdf, _report2, _pdf_path2)
 
         _custom_task["pdf"] = _pdf_name2
-
-        # Step 4: SG 양식 보고서 (DOCX + PDF)
-        _custom_task.update({"step": "sg_report", "step_label": "SG 양식 보고서 생성 중…"})
-        try:
-            from scripts.generate_sg_format_report import generate_all_reports, convert_to_pdf
-            sg_paths = await asyncio.to_thread(
-                generate_all_reports, result, None, None, _reports_dir2 / "sg_format"
-            )
-            sg_pdfs = await asyncio.to_thread(convert_to_pdf, sg_paths)
-            _custom_task["sg_pdfs"] = {k: str(v.name) for k, v in sg_pdfs.items()}
-        except Exception as e:
-            import logging
-            logging.getLogger("frontend.server").warning(f"SG format report failed: {e}")
 
         _custom_task.update({"status": "done", "step": "done", "step_label": "완료"})
 
@@ -1786,7 +1760,7 @@ async def index() -> FileResponse:
     index_path = STATIC / "index.html"
     if not index_path.is_file():
         raise HTTPException(status_code=404, detail="index.html 없음")
-    return FileResponse(index_path)
+    return FileResponse(index_path, headers={"Cache-Control": "no-store, max-age=0"})
 
 
 @app.get("/frontend3")
@@ -1794,7 +1768,7 @@ async def frontend3() -> FileResponse:
     path = STATIC / "frontend3.html"
     if not path.is_file():
         raise HTTPException(status_code=404, detail="frontend3.html 없음")
-    return FileResponse(path)
+    return FileResponse(path, headers={"Cache-Control": "no-store, max-age=0"})
 
 
 app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
@@ -1803,7 +1777,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 def main() -> None:
     import uvicorn
 
-    parser = argparse.ArgumentParser(description="SG 분석 대시보드")
+    parser = argparse.ArgumentParser(description="UAE 분석 대시보드")
     parser.add_argument("--host", default=DEFAULT_HOST)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--open", action="store_true")

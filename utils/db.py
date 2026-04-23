@@ -1,13 +1,15 @@
 """Supabase products 테이블 래퍼 — UAE 전용.
 
-⚠️  안전 정책:
+⚠️ 안전 정책:
     이 모듈의 모든 쓰기 함수는 country='UAE' 행만 건드립니다.
     다른 팀(SG·UY 등)의 데이터를 읽거나 덮어쓰거나 삭제하지 않습니다.
     UAE 전용 보조 테이블(uae_price_reference 등)은 별도 utils 모듈에서 관리합니다.
 
 환경변수:
-  SUPABASE_URL  (기본값 하드코딩)
-  SUPABASE_KEY  (기본값 하드코딩)
+  SUPABASE_URL
+  SUPABASE_KEY
+  SUPABASE_TIMEOUT_SEC (선택, 기본 8초)
+  SUPABASE_DISABLED    (선택, 1/true/yes면 null client 사용)
 """
 from __future__ import annotations
 
@@ -22,25 +24,106 @@ log = logging.getLogger(__name__)
 _UAE_COUNTRY       = "UAE"
 _UAE_SOURCE_PREFIX = "UAE:"   # source_name이 반드시 이 prefix로 시작해야 함
 
-_DEFAULT_URL = "https://oynefikqoibwtfpjlizv.supabase.co"
-_DEFAULT_KEY = (
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-    ".eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bmVmaWtxb2lid3RmcGpsaXp2Iiwicm9sZSI6"
-    "InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjA1NzgwMywiZXhwIjoyMDkxNjMzODAzfQ"
-    ".eCFcjx7gOhiv7mCyR2RiadndE9d6e6kVOWysHrarZTM"
-)
-
 _client_cache: Any = None
 
 
+class _NullResult:
+    def __init__(self, data: list[dict[str, Any]] | None = None):
+        self.data = data or []
+
+
+class _NullQuery:
+    def select(self, *_args, **_kwargs):
+        return self
+
+    def eq(self, *_args, **_kwargs):
+        return self
+
+    def is_(self, *_args, **_kwargs):
+        return self
+
+    def order(self, *_args, **_kwargs):
+        return self
+
+    def limit(self, *_args, **_kwargs):
+        return self
+
+    def or_(self, *_args, **_kwargs):
+        return self
+
+    def upsert(self, *_args, **_kwargs):
+        return self
+
+    def insert(self, *_args, **_kwargs):
+        return self
+
+    def update(self, *_args, **_kwargs):
+        return self
+
+    def delete(self, *_args, **_kwargs):
+        return self
+
+    def execute(self):
+        return _NullResult()
+
+
+class _NullSupabaseClient:
+    def table(self, *_args, **_kwargs):
+        return _NullQuery()
+
+
+_NULL_CLIENT = _NullSupabaseClient()
+
+
+def _env_truthy(name: str) -> bool:
+    raw = str(os.environ.get(name, "") or "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def reset_client_cache() -> None:
+    global _client_cache
+    _client_cache = None
+
+
 def get_client():
-    """Supabase 클라이언트 싱글톤 반환."""
+    """Supabase 클라이언트 싱글톤 반환.
+
+    DB가 느리거나 자격증명이 없을 때도 앱 전체가 멈추지 않도록
+    null client로 폴백합니다.
+    """
     global _client_cache
     if _client_cache is None:
-        from supabase import create_client
-        url = os.environ.get("SUPABASE_URL", _DEFAULT_URL)
-        key = os.environ.get("SUPABASE_KEY", _DEFAULT_KEY)
-        _client_cache = create_client(url, key)
+        if _env_truthy("SUPABASE_DISABLED"):
+            log.warning("SUPABASE_DISABLED=1 설정으로 null client를 사용합니다.")
+            _client_cache = _NULL_CLIENT
+            return _client_cache
+
+        url = str(os.environ.get("SUPABASE_URL", "") or "").strip()
+        key = str(os.environ.get("SUPABASE_KEY", "") or "").strip()
+        if not url or not key:
+            log.warning("Supabase 자격증명이 없어 null client로 폴백합니다.")
+            _client_cache = _NULL_CLIENT
+            return _client_cache
+
+        try:
+            from supabase import create_client
+            from supabase.lib.client_options import SyncClientOptions
+
+            timeout = float(os.environ.get("SUPABASE_TIMEOUT_SEC", "8") or "8")
+            _client_cache = create_client(
+                url,
+                key,
+                options=SyncClientOptions(
+                    postgrest_client_timeout=timeout,
+                    storage_client_timeout=max(5, int(timeout)),
+                    function_client_timeout=min(5, max(1, int(timeout))),
+                    auto_refresh_token=False,
+                    persist_session=False,
+                ),
+            )
+        except Exception as exc:
+            log.warning("Supabase client 초기화 실패 → null client 폴백: %s", exc)
+            _client_cache = _NULL_CLIENT
     return _client_cache
 
 
@@ -84,16 +167,20 @@ def fetch_all_products(country: str = _UAE_COUNTRY) -> list[dict[str, Any]]:
         log.warning("[DB 안전장치] fetch_all_products: country='%s' 무시 → 'UAE' 강제 적용", country)
         country = _UAE_COUNTRY
 
-    sb = get_client()
-    r = (
-        sb.table("products")
-        .select("*")
-        .eq("country", country)
-        .is_("deleted_at", "null")
-        .order("crawled_at", desc=True)
-        .execute()
-    )
-    return r.data or []
+    try:
+        sb = get_client()
+        r = (
+            sb.table("products")
+            .select("*")
+            .eq("country", country)
+            .is_("deleted_at", "null")
+            .order("crawled_at", desc=True)
+            .execute()
+        )
+        return r.data or []
+    except Exception as exc:
+        log.warning("fetch_all_products 실패 → 빈 리스트 폴백: %s", exc)
+        return []
 
 
 def fetch_kup_products(country: str = _UAE_COUNTRY) -> list[dict[str, Any]]:
@@ -105,16 +192,20 @@ def fetch_kup_products(country: str = _UAE_COUNTRY) -> list[dict[str, Any]]:
         log.warning("[DB 안전장치] fetch_kup_products: country='%s' 무시 → 'UAE' 강제 적용", country)
         country = _UAE_COUNTRY
 
-    sb = get_client()
-    r = (
-        sb.table("products")
-        .select("*")
-        .eq("country", country)
-        .eq("source_name", f"{country}:kup_pipeline")
-        .is_("deleted_at", "null")
-        .execute()
-    )
-    return r.data or []
+    try:
+        sb = get_client()
+        r = (
+            sb.table("products")
+            .select("*")
+            .eq("country", country)
+            .eq("source_name", f"{country}:kup_pipeline")
+            .is_("deleted_at", "null")
+            .execute()
+        )
+        return r.data or []
+    except Exception as exc:
+        log.warning("fetch_kup_products 실패 → 빈 리스트 폴백: %s", exc)
+        return []
 
 
 # ── 쓰기 함수 ─────────────────────────────────────────────────────────────────
@@ -129,6 +220,10 @@ def upsert_product(row: dict[str, Any]) -> bool:
     _assert_uae_row(row)
 
     sb = get_client()
+    if sb is _NULL_CLIENT:
+        log.warning("upsert_product 건너뜀: Supabase client 사용 불가")
+        return False
+
     now = datetime.now(timezone.utc).isoformat()
     row.setdefault("crawled_at", now)
     row.setdefault("confidence", 0.5)

@@ -1,4 +1,4 @@
-"""분석 엔진 단위 테스트 — 네트워크 없이 정적 폴백 경로 검증."""
+"""UAE 분석 엔진 단위 테스트 — 네트워크 없이 정적 폴백 경로 검증."""
 
 from __future__ import annotations
 
@@ -8,51 +8,64 @@ from pathlib import Path
 
 
 class TestExportAnalyzerStatic(unittest.TestCase):
-    """API 키 없이 정적 폴백으로 analyze_product 동작 확인."""
+    """API 키 없이 UAE analyzer 정적 폴백 경로를 검증한다."""
 
     def setUp(self) -> None:
         import sys
         sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-        # API 키 제거 (정적 폴백 강제)
         import os
-        self._orig = {
-            k: os.environ.pop(k, None)
-            for k in ("CLAUDE_API_KEY", "ANTHROPIC_API_KEY", "PERPLEXITY_API_KEY", "PBS_FETCH")
-        }
+        env_keys = (
+            "CLAUDE_API_KEY",
+            "ANTHROPIC_API_KEY",
+            "PERPLEXITY_API_KEY",
+            "PBS_FETCH",
+            "SUPABASE_DISABLED",
+        )
+        self._orig = {k: os.environ.get(k) for k in env_keys}
+        for key in env_keys:
+            os.environ[key] = ""
         os.environ["PBS_FETCH"] = "0"
+        os.environ["SUPABASE_DISABLED"] = "1"
+
+        for mod_name in ("analysis.uae_export_analyzer", "utils.db", "utils.static_data"):
+            sys.modules.pop(mod_name, None)
 
     def tearDown(self) -> None:
         import os
         for k, v in self._orig.items():
             if v is not None:
                 os.environ[k] = v
+            else:
+                os.environ.pop(k, None)
 
     def _run(self, coro):
-        return asyncio.get_event_loop().run_until_complete(coro)
+        return asyncio.run(coro)
 
     def test_analyze_all_returns_results(self) -> None:
         """analyze_all이 결과를 반환해야 함 (Supabase에 품목 있으면 8건)."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         self.assertIsInstance(results, list)
 
     def test_result_has_required_fields(self) -> None:
         """모든 결과에 필수 필드 존재."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         required = [
             "product_id",
             "trade_name",
+            "ede_reg",
             "verdict",
             "verdict_en",
             "rationale",
             "key_factors",
+            "entry_pathway",
+            "price_positioning",
+            "tatmeen_note",
             "sources",
             "analyzed_at",
             "analysis_error",
             "claude_model_id",
-            "price_positioning_pbs",
-            "pbs_methodology_label_ko",
         ]
         for r in results:
             for field in required:
@@ -60,7 +73,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_verdict_values_valid(self) -> None:
         """verdict는 적합/부적합/조건부 또는 None(API 미설정) 이어야 함."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         valid = {"적합", "부적합", "조건부", None}
         for r in results:
@@ -69,7 +82,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_verdict_en_values_valid(self) -> None:
         """verdict_en은 SUITABLE/UNSUITABLE/CONDITIONAL 또는 None(API 미설정)."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         valid = {"SUITABLE", "UNSUITABLE", "CONDITIONAL", None}
         for r in results:
@@ -78,7 +91,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_rationale_not_empty(self) -> None:
         """rationale은 비어있지 않아야 함."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         for r in results:
             self.assertTrue(
@@ -88,7 +101,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_fallback_model_label(self) -> None:
         """API 키 없으면 analysis_model이 static_fallback이어야 함."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         for r in results:
             self.assertEqual(
@@ -106,7 +119,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_extract_assistant_text_skips_thinking_blocks(self) -> None:
         """thinking 블록 뒤의 text 블록만 모아 JSON 본문을 복원해야 함."""
-        from analysis.sg_export_analyzer import _extract_assistant_text
+        from analysis.uae_export_analyzer import _extract_assistant_text
 
         class _Think:
             type = "thinking"
@@ -123,7 +136,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_parse_claude_analysis_json_with_preamble(self) -> None:
         """서두 문장이 붙어도 첫 JSON 객체를 파싱해야 함."""
-        from analysis.sg_export_analyzer import _parse_claude_analysis_json
+        from analysis.uae_export_analyzer import _parse_claude_analysis_json
 
         raw = (
             '분석 결과입니다.\n{"verdict": "조건부", "verdict_en": "CONDITIONAL", '
@@ -136,7 +149,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_parse_claude_analysis_json_fenced(self) -> None:
         """마크다운 코드펜스 안의 JSON을 파싱해야 함."""
-        from analysis.sg_export_analyzer import _parse_claude_analysis_json
+        from analysis.uae_export_analyzer import _parse_claude_analysis_json
 
         raw = "```json\n{\"verdict\": \"부적합\", \"verdict_en\": \"UNSUITABLE\"}\n```"
         obj = _parse_claude_analysis_json(raw)
@@ -146,7 +159,7 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_parse_claude_analysis_json_verdict_key_case(self) -> None:
         """키가 Verdict처럼 달라도 수용해야 함."""
-        from analysis.sg_export_analyzer import _parse_claude_analysis_json
+        from analysis.uae_export_analyzer import _parse_claude_analysis_json
 
         raw = '{"Verdict": "적합", "verdict_en": "SUITABLE"}'
         obj = _parse_claude_analysis_json(raw)
@@ -156,13 +169,13 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_unknown_product_id_returns_error(self) -> None:
         """알 수 없는 product_id는 error 필드를 반환해야 함."""
-        from analysis.sg_export_analyzer import analyze_product
+        from analysis.uae_export_analyzer import analyze_product
         result = self._run(analyze_product("UNKNOWN_PID"))
         self.assertIn("error", result)
 
     def test_all_product_ids_covered(self) -> None:
         """analyze_all 결과와 _get_product_meta() 품목이 일치."""
-        from analysis.sg_export_analyzer import analyze_all, _get_product_meta
+        from analysis.uae_export_analyzer import analyze_all, _get_product_meta
         results = self._run(analyze_all(use_perplexity=False))
         result_pids = {r["product_id"] for r in results}
         expected_pids = {m["product_id"] for m in _get_product_meta()}
@@ -170,23 +183,23 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_gastiin_returns_result(self) -> None:
         """Gastiin CR 분석 결과가 반환되어야 함 (API 미설정 시 verdict=None)."""
-        from analysis.sg_export_analyzer import analyze_product
-        r = self._run(analyze_product("SG_gastiin_cr_mosapride", use_perplexity=False))
+        from analysis.uae_export_analyzer import analyze_product
+        r = self._run(analyze_product("UAE_gastiin_cr_mosapride", use_perplexity=False))
         self.assertIn("product_id", r)
-        self.assertIn("hsa_reg", r)
+        self.assertIn("ede_reg", r)
         self.assertIn("entry_pathway", r)
 
     def test_sereterol_returns_result(self) -> None:
         """Sereterol Activair 분석 결과가 반환되어야 함 (API 미설정 시 verdict=None)."""
-        from analysis.sg_export_analyzer import analyze_product
-        r = self._run(analyze_product("SG_sereterol_activair", use_perplexity=False))
+        from analysis.uae_export_analyzer import analyze_product
+        r = self._run(analyze_product("UAE_sereterol_activair", use_perplexity=False))
         self.assertIn("product_id", r)
-        self.assertIn("hsa_reg", r)
+        self.assertIn("ede_reg", r)
         self.assertIn("entry_pathway", r)
 
     def test_key_factors_is_list(self) -> None:
         """key_factors는 리스트여야 함."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         for r in results:
             self.assertIsInstance(r["key_factors"], list,
@@ -194,20 +207,20 @@ class TestExportAnalyzerStatic(unittest.TestCase):
 
     def test_sources_is_list(self) -> None:
         """sources는 리스트여야 함."""
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         results = self._run(analyze_all(use_perplexity=False))
         for r in results:
             self.assertIsInstance(r["sources"], list,
                                   f"{r.get('product_id')}: sources가 리스트가 아님")
 
-    def test_with_db_row_hsa_reg_present(self) -> None:
-        """db_row 제공 시에도 hsa_reg 필드가 반환 결과에 포함."""
-        from analysis.sg_export_analyzer import analyze_product
+    def test_with_db_row_ede_reg_present(self) -> None:
+        """db_row 제공 시에도 ede_reg 필드가 반환 결과에 포함."""
+        from analysis.uae_export_analyzer import analyze_product
         fake_row = {"price_local": 52.3, "confidence": 0.72}
         r = self._run(
-            analyze_product("SG_sereterol_activair", db_row=fake_row, use_perplexity=False)
+            analyze_product("UAE_sereterol_activair", db_row=fake_row, use_perplexity=False)
         )
-        self.assertIn("hsa_reg", r)
+        self.assertIn("ede_reg", r)
         self.assertIn("product_type", r)
 
 

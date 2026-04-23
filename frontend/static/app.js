@@ -105,23 +105,42 @@ function toggleProcess(id) {
   if (arrow) arrow.classList.toggle('closed', hidden);
 }
 
-/* UAE 거시지표 — 하드코딩 (API 연동 시 /api/macro 로 교체) */
-function loadMacro() {
-  const data = {
-    gdp:        '$32,000',   gdp_src:    '2024 · IMF / GASTAT',
-    pop:        '37.2M',     pop_src:    '2024 · GASTAT',
-    pharma:     '$8.8B',     pharma_src: '2024 · IQVIA',
-    growth:     '2.6%',      growth_src: '2024 · SAMA',
+/* UAE 거시지표 — 서버 API(/api/macro) 우선, HTML 기본값 폴백 */
+function _applyMacroCard(key, item) {
+  if (!item || typeof item !== 'object') return;
+
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.textContent = val;
   };
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  set('macro-gdp',        data.gdp);
-  set('macro-gdp-src',    data.gdp_src);
-  set('macro-pop',        data.pop);
-  set('macro-pop-src',    data.pop_src);
-  set('macro-pharma',     data.pharma);
-  set('macro-pharma-src', data.pharma_src);
-  set('macro-growth',     data.growth);
-  set('macro-growth-src', data.growth_src);
+
+  set(`macro-${key}-label`, item.label);
+  set(`macro-${key}-value`, item.value);
+  set(`macro-${key}-src`, item.sub);
+}
+
+async function loadMacro() {
+  try {
+    const res = await fetch('/api/macro', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const items = await res.json();
+    if (!Array.isArray(items) || !items.length) return;
+
+    const findItem = (patterns) => (
+      items.find(item => {
+        const label = String(item?.label || '');
+        return patterns.some(pattern => label.includes(pattern));
+      }) || null
+    );
+
+    _applyMacroCard('gdp', findItem(['GDP']));
+    _applyMacroCard('pop', findItem(['인구']));
+    _applyMacroCard('pharma', findItem(['제약', '의약품']));
+    _applyMacroCard('growth', findItem(['성장', 'CAGR']));
+  } catch (e) {
+    console.warn('거시지표 로드 실패:', e);
+  }
 }
 
 /* P2 함수 호환 래퍼 — HTML onclick 참조와 app.js 구현을 분리 */

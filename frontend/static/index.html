@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>UAE 수출 적합성 분석 — UPharma Export AI</title>
-  <link rel="stylesheet" href="/static/style.css?v=17"/>
+  <link rel="stylesheet" href="/static/style.css?v=18"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
@@ -39,24 +39,24 @@
       <!-- KPI 카드 4개 -->
       <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-label">국가 GDP</div>
-          <div class="kpi-value">US$ 504.2 Billion</div>
-          <div class="kpi-src">출처: IMF (2024)</div>
+          <div id="macro-gdp-label" class="kpi-label">1인당 GDP</div>
+          <div id="macro-gdp-value" class="kpi-value">USD 41,000+</div>
+          <div id="macro-gdp-src" class="kpi-src">2024 · IMF / FCSC</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">인구</div>
-          <div class="kpi-value">10,320,000명</div>
-          <div class="kpi-src">2024 · UN</div>
+          <div id="macro-pop-label" class="kpi-label">인구</div>
+          <div id="macro-pop-value" class="kpi-value">1,090만 명</div>
+          <div id="macro-pop-src" class="kpi-src">2024 · FCSC(연방통계청)</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">의약품 시장 규모</div>
-          <div class="kpi-value">$5.2B</div>
-          <div class="kpi-src">2024 · IQVIA</div>
+          <div id="macro-pharma-label" class="kpi-label">제약 시장 규모</div>
+          <div id="macro-pharma-value" class="kpi-value">USD 44.5억</div>
+          <div id="macro-pharma-src" class="kpi-src">2025 · IMARC Group / Ken Research</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">실질 성장률</div>
-          <div class="kpi-value">3.5%</div>
-          <div class="kpi-src">2024 · IMF</div>
+          <div id="macro-growth-label" class="kpi-label">연평균 성장률</div>
+          <div id="macro-growth-value" class="kpi-value">6.1% CAGR</div>
+          <div id="macro-growth-src" class="kpi-src">2025-2033 · EDE 출범 후 전망</div>
         </div>
       </div>
 
@@ -468,7 +468,7 @@
   </button>
 </div>
 
-<script src="/static/app.js?v=20"></script>
+<script src="/static/app.js?v=21"></script>
 <script>
 function toggleManual() {
   var body  = document.getElementById('manual-body');

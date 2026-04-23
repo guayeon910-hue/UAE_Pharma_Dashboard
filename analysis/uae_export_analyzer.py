@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 try:
     from dotenv import load_dotenv
-    load_dotenv(ROOT / ".env", override=True)
+    load_dotenv(ROOT / ".env", override=False)
 except ImportError:
     pass
 
@@ -890,7 +890,7 @@ async def analyze_all(
     use_perplexity: bool = True,
 ) -> list[dict[str, Any]]:
     from utils.db import fetch_kup_products
-    kup_rows = fetch_kup_products("UAE")
+    kup_rows = await asyncio.to_thread(fetch_kup_products, "UAE")
     db_rows = {r["product_id"]: r for r in kup_rows}
 
     tasks = [

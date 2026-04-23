@@ -10,28 +10,31 @@ build/
 venv/
 env/
 
-# 환경 변수
+# Environment
 .env
 .env.*
 !.env.example
 
-# 리포트 출력물
+# Generated outputs
 reports/*.pdf
 reports/*.json
+reports/**/*.pdf
+reports/**/*.json
+reports/**/*.docx
+reports/sg_format/
+p2_output.json
 
-# 폰트 (빌드 시 다운로드)
+# Fonts
 fonts/*.ttf
 fonts/*.otf
 
-# Claude Code (로컬 전용)
+# Local tooling
 .claude/
-
-# macOS
-.DS_Store
-**/.DS_Store
-
-# IDE
 .vscode/
 .idea/
+
+# OS/editor clutter
+.DS_Store
+**/.DS_Store
 *.swp
 *.swo
