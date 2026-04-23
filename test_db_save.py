@@ -4,7 +4,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-async def test_db_save():
+async def run_db_save_check():
     from utils.uae_doh_crawler import fetch_doh_prices, save_prices_to_supabase
     
     print("Fetching DoH data...")
@@ -16,5 +16,11 @@ async def test_db_save():
         result = await save_prices_to_supabase(doh)
         print(f"Save result: {result} rows upserted.")
 
+
+def test_db_save():
+    import pytest
+    pytest.skip("Manual Supabase write check; run `python test_db_save.py` explicitly.")
+
+
 if __name__ == "__main__":
-    asyncio.run(test_db_save())
+    asyncio.run(run_db_save_check())

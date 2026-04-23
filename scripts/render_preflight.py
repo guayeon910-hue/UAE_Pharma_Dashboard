@@ -58,6 +58,10 @@ def main() -> int:
         _check_import("fastapi"),
         _check_import("uvicorn"),
         _check_import("reportlab"),
+        _check_import("multipart"),
+        _check_import("openpyxl"),
+        _check_import("pdfplumber"),
+        _check_import("pypdf"),
     ]
     for line in checks:
         print(line)

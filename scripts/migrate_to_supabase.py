@@ -42,8 +42,8 @@ try:
 except ImportError:
     pass
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://oynefikqoibwtfpjlizv.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bmVmaWtxb2lid3RmcGpsaXp2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjA1NzgwMywiZXhwIjoyMDkxNjMzODAzfQ.eCFcjx7gOhiv7mCyR2RiadndE9d6e6kVOWysHrarZTM")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip()
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "").strip()
 DATA_DIR = ROOT / "datas"
 STORAGE_BUCKET = "sg-documents"
 
@@ -68,6 +68,8 @@ _patch_openpyxl()
 
 
 def _client():
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise RuntimeError("SUPABASE_URL and SUPABASE_KEY must be set before migration.")
     from supabase import create_client
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 

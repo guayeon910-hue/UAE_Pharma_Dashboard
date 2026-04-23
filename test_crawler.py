@@ -4,7 +4,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-async def test_crawler():
+async def run_crawler_check():
     from utils.uae_doh_crawler import fetch_doh_prices, fetch_dha_prices
     
     print("Testing DoH...")
@@ -19,5 +19,11 @@ async def test_crawler():
     if dha:
         print(f"Sample DHA: {dha[0]}")
 
+
+def test_crawler():
+    import pytest
+    pytest.skip("Manual network check; run `python test_crawler.py`.")
+
+
 if __name__ == "__main__":
-    asyncio.run(test_crawler())
+    asyncio.run(run_crawler_check())
