@@ -11,7 +11,7 @@ import time
 import webbrowser
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 try:
@@ -20,7 +20,7 @@ try:
 except ImportError:
     pass
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -369,6 +369,18 @@ async def _run_pipeline_for_product(product_key: str) -> None:
         if db_row is None:
             await _emit({"phase": "pipeline", "message": f"DB에서 품목 미발견: {product_key}", "level": "warn"})
 
+        if db_row:
+            # Aster Pharmacy 실시간 크롤링 (소매가 보완)
+            task.update({"step": "crawl", "step_label": "Aster 소매가 실시간 스크래핑 중…"})
+            await _emit({"phase": "pipeline", "message": f"{product_key} — Aster Pharmacy 스크래핑", "level": "info"})
+            try:
+                from utils.uae_aster_crawler import AsterPharmacyCrawler
+                crawler = AsterPharmacyCrawler()
+                await crawler.search_and_save(db_row.get("trade_name", product_key))
+            except Exception as e:
+                import logging
+                logging.getLogger("frontend.server").warning(f"Aster crawler failed: {e}")
+
         # 1. Claude 분석
         task.update({"step": "analyze", "step_label": "Claude 분석 중…"})
         await _emit({"phase": "pipeline", "message": f"{product_key} — 분석 시작", "level": "info"})
@@ -413,11 +425,27 @@ async def _run_pipeline_for_product(product_key: str) -> None:
         await asyncio.to_thread(render_pdf, _report, _pdf_path)
 
         task["pdf"] = _pdf_name
+
+        # 4. SG 양식 보고서 (DOCX + PDF)
+        task.update({"step": "sg_report", "step_label": "SG 양식 보고서 생성 중…"})
+        try:
+            from scripts.generate_sg_format_report import generate_all_reports, convert_to_pdf
+            sg_paths = await asyncio.to_thread(
+                generate_all_reports, result, None, None, _reports_dir / "sg_format"
+            )
+            sg_pdfs = await asyncio.to_thread(convert_to_pdf, sg_paths)
+            task["sg_pdfs"] = {k: str(v.name) for k, v in sg_pdfs.items()}
+        except Exception as e:
+            import logging
+            logging.getLogger("frontend.server").warning(f"SG format report failed: {e}")
+
         task.update({"status": "done", "step": "done", "step_label": "완료"})
         await _emit({"phase": "pipeline", "message": "파이프라인 완료", "level": "success"})
 
     except Exception as exc:
-        task.update({"status": "error", "step": "error", "step_label": str(exc)})
+        import traceback
+        traceback.print_exc()
+        task.update({"status": "error", "step": "error", "step_label": str(exc) or repr(exc)})
         await _emit({"phase": "pipeline", "message": f"오류: {exc}", "level": "error"})
 
 
@@ -436,6 +464,16 @@ class CustomDrugBody(BaseModel):
 async def _run_custom_pipeline(trade_name: str, inn: str, dosage_form: str) -> None:
     global _custom_task
     try:
+        # Step 0: Aster Pharmacy 실시간 크롤링 (소매가 보완)
+        _custom_task.update({"step": "crawl", "step_label": "Aster 소매가 실시간 스크래핑 중…"})
+        try:
+            from utils.uae_aster_crawler import AsterPharmacyCrawler
+            crawler = AsterPharmacyCrawler()
+            await crawler.search_and_save(trade_name)
+        except Exception as e:
+            import logging
+            logging.getLogger("frontend.server").warning(f"Aster crawler failed: {e}")
+
         # Step 1: Claude 분석
         _custom_task.update({"step": "analyze", "step_label": "Claude 분석 중…"})
         from analysis.uae_export_analyzer import analyze_custom_product
@@ -473,6 +511,20 @@ async def _run_custom_pipeline(trade_name: str, inn: str, dosage_form: str) -> N
         await asyncio.to_thread(render_pdf, _report2, _pdf_path2)
 
         _custom_task["pdf"] = _pdf_name2
+
+        # Step 4: SG 양식 보고서 (DOCX + PDF)
+        _custom_task.update({"step": "sg_report", "step_label": "SG 양식 보고서 생성 중…"})
+        try:
+            from scripts.generate_sg_format_report import generate_all_reports, convert_to_pdf
+            sg_paths = await asyncio.to_thread(
+                generate_all_reports, result, None, None, _reports_dir2 / "sg_format"
+            )
+            sg_pdfs = await asyncio.to_thread(convert_to_pdf, sg_paths)
+            _custom_task["sg_pdfs"] = {k: str(v.name) for k, v in sg_pdfs.items()}
+        except Exception as e:
+            import logging
+            logging.getLogger("frontend.server").warning(f"SG format report failed: {e}")
+
         _custom_task.update({"status": "done", "step": "done", "step_label": "완료"})
 
     except Exception as exc:
@@ -670,7 +722,7 @@ async def generate_p2_report(body: P2ReportBody) -> JSONResponse:
     _reports_dir.mkdir(parents=True, exist_ok=True)
 
     safe_name = re.sub(r"[^\w가-힣]", "_", body.product_name)[:30] or "product"
-    pdf_name  = f"sg_p2_{safe_name}_{_ts}.pdf"
+    pdf_name  = f"uae_p2_{safe_name}_{_ts}.pdf"
     pdf_path  = _reports_dir / pdf_name
 
     p2_data = {
@@ -690,7 +742,135 @@ async def generate_p2_report(body: P2ReportBody) -> JSONResponse:
     return JSONResponse({"ok": True, "pdf": pdf_name})
 
 
+# ── P2 FOB 역산 헬퍼 ─────────────────────────────────────────────────────────
+
+_llm_client = None
+
+
+def _get_llm():
+    """Lazy-init LLM client for FOB pipeline classification."""
+    global _llm_client
+    if _llm_client is not None:
+        return _llm_client
+    try:
+        from llm_client import LLMClient
+        _llm_client = LLMClient()
+        return _llm_client
+    except Exception:
+        return None
+
+
+def _fetch_exchange_for_fob() -> dict:
+    """AED 환율을 fob_private가 기대하는 형식으로 반환."""
+    try:
+        import yfinance as yf
+        usd_krw = float(yf.Ticker("USDKRW=X").fast_info.last_price)
+    except Exception:
+        usd_krw = 1393.0
+    aed_usd = 1.0 / 3.6725
+    return {
+        "aed_usd": round(aed_usd, 4),
+        "usd_krw": round(usd_krw, 2),
+        "aed_krw": round(aed_usd * usd_krw, 2),
+        "source": "yfinance+peg",
+        "ok": True,
+    }
+
+
+@app.post("/api/p2/price-analyze")
+async def api_p2_price_analyze(
+    input_mode: str = Form(...),
+    market_type: str = Form(...),
+    report_id: Optional[str] = Form(default=None),
+    report_data: Optional[str] = Form(default=None),
+    overrides: Optional[str] = Form(default=None),
+    manual_product: Optional[str] = Form(default=None),
+    pdf: Optional[UploadFile] = File(default=None),
+):
+    """2공정 가격 분석 (FOB 역산). fob_private.py 모듈을 호출."""
+    import logging as _log
+    _logger = _log.getLogger("frontend.server.p2")
+
+    im = (input_mode or "").strip().lower()
+    mt = (market_type or "").strip().lower()
+    if im not in ("ai", "manual"):
+        return JSONResponse(status_code=422, content={"ok": False, "detail": "input_mode는 ai 또는 manual"})
+    if mt not in ("public", "private"):
+        return JSONResponse(status_code=422, content={"ok": False, "detail": "market_type는 public 또는 private"})
+
+    report_payload: Optional[dict] = None
+    overrides_payload: Optional[dict] = None
+    has_pdf = pdf is not None and bool((pdf.filename or "").strip())
+    pdf_bytes: Optional[bytes] = None
+
+    if report_data:
+        try:
+            report_payload = json.loads(report_data)
+        except Exception:
+            return JSONResponse(status_code=400, content={"ok": False, "detail": "report_data JSON 파싱 실패"})
+
+    if overrides:
+        try:
+            overrides_payload = json.loads(overrides)
+        except Exception:
+            return JSONResponse(status_code=400, content={"ok": False, "detail": "overrides JSON 파싱 실패"})
+
+    man = (manual_product or "").strip()
+
+    if mt == "private" and im == "manual":
+        return JSONResponse(status_code=400, content={"ok": False, "detail": "민간 시장은 직접 입력 미지원. 보고서 또는 PDF를 사용하세요."})
+
+    if im == "ai" and not report_payload and not has_pdf:
+        return JSONResponse(status_code=400, content={"ok": False, "detail": "저장된 보고서를 선택하거나 PDF를 업로드하세요."})
+
+    if im == "manual" and not man:
+        return JSONResponse(status_code=400, content={"ok": False, "detail": "품목명을 입력하세요."})
+
+    if mt == "public" and im == "manual" and man and not report_payload:
+        report_payload = {"trade_name": man, "inn": "", "dosage_form": "", "strength": ""}
+
+    if has_pdf:
+        buf = bytearray()
+        while True:
+            chunk = await pdf.read(65536)
+            if not chunk:
+                break
+            buf.extend(chunk)
+            if len(buf) > 8 * 1024 * 1024:
+                return JSONResponse(status_code=413, content={"ok": False, "detail": "PDF는 8MB 이하만 허용"})
+        pdf_bytes = bytes(buf)
+
+    try:
+        from frontend.fob_private import run_private_pipeline, run_public_pipeline
+    except ImportError as exc:
+        _logger.exception("fob_private 모듈 로드 실패")
+        return JSONResponse(status_code=500, content={"ok": False, "detail": f"FOB 모듈 로드 실패: {exc}"})
+
+    try:
+        fx = await asyncio.to_thread(_fetch_exchange_for_fob)
+        llm = _get_llm()
+        pipeline_fn = run_private_pipeline if mt == "private" else run_public_pipeline
+        result = await asyncio.to_thread(
+            pipeline_fn,
+            report_data=report_payload,
+            pdf_bytes=pdf_bytes,
+            overrides=overrides_payload,
+            exchange_rates=fx,
+            llm=llm,
+        )
+    except ValueError as exc:
+        return JSONResponse(status_code=400, content={"ok": False, "detail": str(exc)})
+    except Exception as exc:
+        _logger.exception("P2 FOB 파이프라인 실패")
+        return JSONResponse(status_code=500, content={"ok": False, "detail": f"FOB 역산 실패: {exc}"})
+
+    if not result.get("ok"):
+        return JSONResponse(status_code=400, content=result)
+    return result
+
+
 # ── 2공정 AI 파이프라인 (PDF → Haiku 가격 추출 → 계산 → Haiku 분석 → PDF) ────────
+
 
 _p2_ai_task: dict[str, Any] = {}
 
@@ -1177,6 +1357,8 @@ async def _run_buyer_pipeline(
     global _buyer_task
 
     async def _log(msg: str, level: str = "info") -> None:
+        if "분석 중" in msg or "수집 완료" in msg:
+            _buyer_task["step_label"] = msg.strip()
         await _emit({"phase": "buyer", "message": msg, "level": level})
 
     try:
@@ -1233,7 +1415,7 @@ async def _run_buyer_pipeline(
         _reports_dir.mkdir(parents=True, exist_ok=True)
 
         safe = _re_b.sub(r"[^\w가-힣]", "_", product_key)[:30]
-        pdf_name = f"sg_buyers_{safe}_{_ts}.pdf"
+        pdf_name = f"uae_buyers_{safe}_{_ts}.pdf"
         pdf_path = _reports_dir / pdf_name
 
         await asyncio.to_thread(build_buyer_pdf, ranked, product_label, pdf_path)
@@ -1315,7 +1497,7 @@ async def buyer_report_download(name: str | None = None) -> Any:
                 filename=target.name, content_disposition_type="attachment",
             )
     # 최신 buyers PDF
-    pdfs = sorted(reports_dir.glob("sg_buyers_*.pdf"), key=lambda p: p.stat().st_mtime, reverse=True)
+    pdfs = sorted(reports_dir.glob("uae_buyers_*.pdf"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not pdfs:
         raise HTTPException(404, "바이어 보고서 없음")
     return FileResponse(

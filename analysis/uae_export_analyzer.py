@@ -200,7 +200,14 @@ def _load_product_meta() -> list[dict[str, Any]]:
 
     result = []
     for r in rows:
-        cs = r.get("country_specific") or {}
+        cs_raw = r.get("country_specific")
+        if isinstance(cs_raw, str):
+            try:
+                import json
+                cs_raw = json.loads(cs_raw)
+            except Exception:
+                cs_raw = {}
+        cs = cs_raw or {}
         result.append({
             "product_id":       r.get("product_id", ""),
             "trade_name":       r.get("trade_name", ""),
@@ -226,6 +233,31 @@ def _get_product_meta() -> list[dict[str, Any]]:
 
 def _get_meta_by_pid() -> dict[str, dict[str, Any]]:
     return {m["product_id"]: m for m in _get_product_meta()}
+
+
+def _parse_price_context_to_comparison(context: str) -> dict[str, Any]:
+    if not context:
+        return {}
+    import re
+    items = []
+    for line in context.splitlines():
+        if line.strip().startswith('-'):
+            parts = [p.strip() for p in line.split('|')]
+            trade_name = parts[0][1:].strip()
+            price = 0.0
+            for p in parts:
+                if 'AED' in p:
+                    try:
+                        price = float(re.sub(r'[^\d.]', '', p))
+                    except:
+                        pass
+            source = 'unknown'
+            for p in parts:
+                if p.startswith('[출처:') or p.startswith('[source:'):
+                    source = p.replace('[출처:', '').replace('[source:', '').replace(']', '').strip()
+            if price > 0:
+                items.append({'trade_name': trade_name, 'price_aed': price, 'source': source, 'type': 'competitors'})
+    return {"competitors": items} if items else {}
 
 
 # ── 유틸리티 ──────────────────────────────────────────────────────────────────
@@ -730,6 +762,7 @@ async def analyze_product(
         "price_positioning": result.get("price_positioning", ""),
         "tatmeen_note": result.get("tatmeen_note", ""),
         "risks_conditions": result.get("risks_conditions", ""),
+        "price_comparison": _parse_price_context_to_comparison(doh_price_context),
         "section_source_map": {
             "제품 식별": "supabase.products (UAE:kup_pipeline)",
             "핵심 판정": (
@@ -840,6 +873,7 @@ async def analyze_custom_product(
         "price_positioning":    result.get("price_positioning", ""),
         "tatmeen_note":         result.get("tatmeen_note", ""),
         "risks_conditions":     result.get("risks_conditions", ""),
+        "price_comparison":     _parse_price_context_to_comparison(doh_price_context),
         "sources":              result.get("sources", []),
         "confidence_note":      result.get("confidence_note", ""),
         "analysis_model":       claude_model_id if claude_key else "미설정",

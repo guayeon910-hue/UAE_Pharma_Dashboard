@@ -34,7 +34,7 @@ def _load_all_contexts() -> dict[str, StaticContext]:
     from utils.db import get_client
     sb = get_client()
     try:
-        rows = sb.table("sg_product_context").select("*").execute().data or []
+        rows = sb.table("uae_product_context").select("*").execute().data or []
     except Exception:
         rows = []
 

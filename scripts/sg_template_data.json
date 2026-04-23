@@ -1,0 +1,998 @@
+{
+  "cover": {
+    "file": "SG_00_표지.docx",
+    "sections": 1,
+    "paragraph_count": 24,
+    "table_count": 0,
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 1,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 2,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 3,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 4,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 5,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 6,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 7,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 8,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 9,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 10,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 11,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 12,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 13,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 14,
+        "style": "Normal",
+        "text": "싱가포르 진출 전략 보고서"
+      },
+      {
+        "idx": 15,
+        "style": "Normal",
+        "text": "한국유나이티드제약"
+      },
+      {
+        "idx": 16,
+        "style": "Normal",
+        "text": "2026-04-21"
+      },
+      {
+        "idx": 17,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 18,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 19,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 20,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 21,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 22,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 23,
+        "style": "Normal",
+        "text": "수출가격 전략 - 바이어 후보 리스트 - 시장분석"
+      }
+    ],
+    "tables": []
+  },
+  "market_report": {
+    "file": "SG_01_시장보고서_Sereterol.docx",
+    "sections": 1,
+    "paragraph_count": 55,
+    "table_count": 0,
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "None",
+        "text": "싱가포르 시장보고서 — Sereterol Activair"
+      },
+      {
+        "idx": 1,
+        "style": "None",
+        "text": "Sereterol Activair (Fluticasone/Salmeterol)  |  HS CODE: 3004.90  |  Singapore  |  2026-04-21"
+      },
+      {
+        "idx": 2,
+        "style": "None",
+        "text": "1. 의료 거시환경 파악"
+      },
+      {
+        "idx": 3,
+        "style": "None",
+        "text": "인구  약 5,960,000명  (Singapore Department of Statistics, 2024)"
+      },
+      {
+        "idx": 4,
+        "style": "None",
+        "text": "1인당 GDP  USD 88,447  (IMF 2024)"
+      },
+      {
+        "idx": 5,
+        "style": "None",
+        "text": "의약품 시장 규모  USD 2.6 Billion  (2024 추산, IQVIA)"
+      },
+      {
+        "idx": 6,
+        "style": "None",
+        "text": "보건 지출  GDP 대비 약 6.5%  (MOH Singapore, 2023)"
+      },
+      {
+        "idx": 7,
+        "style": "None",
+        "text": "천식·COPD 유병률  성인 인구의 약 5.4% (천식), 약 2.4% (COPD)  (MOH Singapore 2023)"
+      },
+      {
+        "idx": 8,
+        "style": "None",
+        "text": "흡입제 시장 규모  약 USD 180M  (2024 추산, IQVIA Singapore)"
+      },
+      {
+        "idx": 9,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 10,
+        "style": "None",
+        "text": "싱가포르는 세계 최고 수준의 의료 인프라를 보유한 도시국가로, GINA/GOLD 가이드라인을 국가 표준 진료지침으로 채택하고 있습니다. 흡입형 복합제(ICS/LABA) 시장은 천식 및 COPD 환자 증가와 함께 꾸준한 성장세를 보이고 있으며, Fluticasone/Salmeterol 성분은 MOH NDF (National Drug Fund, 국가약물기금) 포뮬러리에 등재된 급여 치료제입니다. 공공 의료기관(National University Hospital, Singapore General Hospital 등)과 민간 클리닉·약국 체인 모두 처방 수요가 높은 시장입니다."
+      },
+      {
+        "idx": 11,
+        "style": "None",
+        "text": "2. 무역/규제 환경"
+      },
+      {
+        "idx": 12,
+        "style": "None",
+        "text": "▸ HSA 등록 현황"
+      },
+      {
+        "idx": 13,
+        "style": "None",
+        "text": "Sereterol Activair 브랜드는 현재 HSA (Health Sciences Authority, 싱가포르 보건과학청) Therapeutic Products Register에 직접 등재된 기록이 확인되지 않습니다. 동일 성분·용량의 참고 제품 SERETIDE(GSK)가 2011년부터 승인되어 있어, 생물학적 동등성 자료를 활용한 abridged NDA (New Drug Application, 신약 신청) 경로 적용 가능성이 있습니다. 신규 진입 시 HSA는 Health Products Act 및 Health Products (Therapeutic Products) Regulations 2016 하에서 심사를 진행하며, Full NDA 또는 동등성(abridged) 심사 경로를 선택해야 합니다."
+      },
+      {
+        "idx": 14,
+        "style": "None",
+        "text": "▸ 진입 채널 권고"
+      },
+      {
+        "idx": 15,
+        "style": "None",
+        "text": "abridged NDA (동등성 심사) 경로 권장. SERETIDE 등 선발품과의 생물학적 동등성·임상 생체이용률(BA/BE) 자료 제출 필수. 신청 전 HSA와 Pre-submission 회의(Pre-sub)를 통해 심사 경로 및 필요 자료 목록을 사전 확정해야 합니다. GSK의 fluticasone/salmeterol 조합제에 대한 싱가포르 내 특허 보호 상태 확인이 필수 선결 사항입니다."
+      },
+      {
+        "idx": 16,
+        "style": "None",
+        "text": "▸ 관세 및 무역"
+      },
+      {
+        "idx": 17,
+        "style": "None",
+        "text": "싱가포르는 의약품에 대해 수입 관세를 부과하지 않습니다(GST 9% 별도). GeBIZ (Government Electronic Business, 정부 전자구매 플랫폼)를 통한 공공 조달 이력이 확인되지 않으나, NDF 포뮬러리 등재 후 공공 병원 채널 진입이 가능합니다."
+      },
+      {
+        "idx": 18,
+        "style": "None",
+        "text": "3. 참고 가격"
+      },
+      {
+        "idx": 19,
+        "style": "None",
+        "text": "참고 가격 (PBS 기준)  DPMQ (Dispensed Price for Maximum Quantity, 최대 조제량 약가) AUD 15.18  |  참고 SGD 약 13.21 (방법론적 추산 — 싱가포르 약가 직접 적용 불가)"
+      },
+      {
+        "idx": 20,
+        "style": "None",
+        "text": "SERETIDE 에보할러 25/250mcg  SGD 42~48 / 120dose inhaler  (Singapore 민간 약국 참고가, 2025)"
+      },
+      {
+        "idx": 21,
+        "style": "None",
+        "text": "SERETIDE 에보할러 25/125mcg  SGD 35~42 / 120dose inhaler  (Singapore 민간 약국 참고가, 2025)"
+      },
+      {
+        "idx": 22,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 23,
+        "style": "None",
+        "text": "싱가포르에서는 흡입제 Fluticasone/Salmeterol 성분의 NDF 공개 급여가가 제한적으로 공시됩니다. 민간 병원·약국 공급가를 기준으로 상대 가격 전략을 수립하는 접근이 적절하며, SERETIDE 대비 10~15% 할인 포지셔닝으로 초기 시장 진입 후 브랜드 인지도 확보가 권장됩니다."
+      },
+      {
+        "idx": 24,
+        "style": "None",
+        "text": "4. 리스크 / 조건"
+      },
+      {
+        "idx": 25,
+        "style": "None",
+        "text": "▸ 규제 심사 소요 기간"
+      },
+      {
+        "idx": 26,
+        "style": "None",
+        "text": "HSA 신규 허가 신청 시 심사 소요 기간은 통상 6~12개월이 예상됩니다. 특허 분쟁 가능성이 존재할 경우 추가 지연 리스크가 발생할 수 있으며, 사전에 GSK 특허 만료 여부 및 싱가포르 내 특허 보호 상태를 법무 자문을 통해 확인해야 합니다."
+      },
+      {
+        "idx": 27,
+        "style": "None",
+        "text": "▸ 경쟁 강도"
+      },
+      {
+        "idx": 28,
+        "style": "None",
+        "text": "HSA Therapeutic Products Register에 동일 성분의 경쟁품 23건이 등재되어 있으며, SERETIDE 에보할러(25/50, 25/125 mcg) 등이 처방 기반 주요 품목으로 확인됩니다. 처방 기반 시장 내 신규 진입자의 처방 전환 난제가 높으므로, 의사 커뮤니티와의 조기 관계 구축 및 임상 데이터 제시를 통한 신뢰성 확보가 선행되어야 합니다."
+      },
+      {
+        "idx": 29,
+        "style": "None",
+        "text": "▸ 포뮬러리 등재"
+      },
+      {
+        "idx": 30,
+        "style": "None",
+        "text": "MOH NDF 포뮬러리 포함 여부 및 공급사 등재 요건(약국 판매 인가 등)에 대한 추가 협의가 필요합니다. NDF 등재 전까지는 자부담(out-of-pocket) 처방 위주의 민간 시장 접근이 현실적입니다."
+      },
+      {
+        "idx": 31,
+        "style": "None",
+        "text": "5. 근거 및 출처"
+      },
+      {
+        "idx": 32,
+        "style": "None",
+        "text": "▸ 5-1. Perplexity 추천 논문"
+      },
+      {
+        "idx": 33,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 34,
+        "style": "None",
+        "text": "No.1  Listing of approvals — Health Sciences Authority [HSA]"
+      },
+      {
+        "idx": 35,
+        "style": "None",
+        "text": "싱가포르 HSA에서 fluticasone propionate/salmeterol 고정 용량 조합 흡입제(Respiro Aerosol Inhaler 25mcg/250mcg)의 등록 승인이 확인됩니다. 신규 제품의 abridged 경로 신청 시 동일 성분 등재 선례로서 규제 전략 수립에 직접 활용 가능합니다."
+      },
+      {
+        "idx": 36,
+        "style": "None",
+        "text": "출처: https://www.hsa.gov.sg/therapeutic-products/listing-of-approvals"
+      },
+      {
+        "idx": 37,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 38,
+        "style": "None",
+        "text": "No.2  2023 GDA Approvals — Health Sciences Authority [HSA]"
+      },
+      {
+        "idx": 39,
+        "style": "None",
+        "text": "2023년 HSA GDA (Generic Drug Application, 제네릭 의약품 신청) 승인 목록에 Salflumix Easyhaler(fluticasone 250/500mcg + salmeterol 50mcg 흡입 분말)의 등록 내역이 포함되어 있습니다. DPI(Dry Powder Inhaler) 제형의 최근 승인 선례로서 Sereterol Activair의 규제 신청 전략 및 심사 기준 파악에 유용합니다."
+      },
+      {
+        "idx": 40,
+        "style": "None",
+        "text": "출처: https://www.hsa.gov.sg/docs/default-source/hprg-tpb/registration/2023_gda-approvals"
+      },
+      {
+        "idx": 41,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 42,
+        "style": "None",
+        "text": "No.3  NDF Listing by Pharmacological Classification — MOH Singapore"
+      },
+      {
+        "idx": 43,
+        "style": "None",
+        "text": "싱가포르 MOH NDF (National Drug Fund, 국가약물기금) 포뮬러리에 Fluticasone Propionate + Salmeterol이 등재 약물로 분류되어 있음이 확인됩니다. 공립 병원 처방 허용 목록 및 보험 급여 대상 여부를 파악하는 데 핵심 근거 자료로 활용됩니다."
+      },
+      {
+        "idx": 44,
+        "style": "None",
+        "text": "출처: https://www.ndf.gov.sg/about-drugs/ndf-listing-by-pharmacological-classification"
+      },
+      {
+        "idx": 45,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 46,
+        "style": "None",
+        "text": "▸ 5-2. 사용된 DB/기관"
+      },
+      {
+        "idx": 47,
+        "style": "None",
+        "text": "•  HSA Therapeutic Products Register (조회: 2026년 3월) — 싱가포르 공식 의약품 등록 DB"
+      },
+      {
+        "idx": 48,
+        "style": "None",
+        "text": "•  Health Products Act & Health Products (Therapeutic Products) Regulations 2016"
+      },
+      {
+        "idx": 49,
+        "style": "None",
+        "text": "•  MOH National Drug Fund (NDF) Formulary — 싱가포르 국가 약제 포뮬러리"
+      },
+      {
+        "idx": 50,
+        "style": "None",
+        "text": "•  PBS 공개 스케줄 — fluticasone propionate 참고가 (https://www.pbs.gov.au/browse/medicine?search=14347D)"
+      },
+      {
+        "idx": 51,
+        "style": "None",
+        "text": "•  HealthHub / MOH — Salmeterol and Fluticasone Inhaler 의약품 정보"
+      },
+      {
+        "idx": 52,
+        "style": "None",
+        "text": "•  IQVIA Singapore — Pharmaceutical Market Data 2024"
+      },
+      {
+        "idx": 53,
+        "style": "None",
+        "text": "•  KU Pharma 제품 파이프라인 (SG_sereterol_activair)"
+      },
+      {
+        "idx": 54,
+        "style": "None",
+        "text": "•  Perplexity 실시간 규제·시장 정보 (2024~2026)"
+      }
+    ],
+    "tables": []
+  },
+  "price_strategy": {
+    "file": "SG_02_수출가격전략_Gadvoa (1).docx",
+    "sections": 1,
+    "paragraph_count": 48,
+    "table_count": 0,
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "Normal",
+        "text": "싱가포르 수출 가격 전략 보고서 — Gadvoa Inj."
+      },
+      {
+        "idx": 1,
+        "style": "Normal",
+        "text": "Gadvoa Inj. (Gadobutrol 604.72mg)  | 2026-04-21"
+      },
+      {
+        "idx": 2,
+        "style": "Normal",
+        "text": "1. 싱가포르 거시 시장"
+      },
+      {
+        "idx": 3,
+        "style": "Normal",
+        "text": "싱가포르는 인구 약 596만 명의 고소득 도시국가로, 1인당 GDP USD 88,447(IMF 2024)로 세계 최상위권입니다. 의료비 지출은 GDP의 약 6.5% 수준이며 의약품 시장 규모는 약 USD 2.6B(2024 추산)으로 연평균 5~6% 성장세를 유지하고 있습니다. MRI 조영제 시장은 고령화 및 만성질환 증가로 수요가 꾸준히 확대되고 있으며, 공공 의료기관(MOH Holdings 산하 공공병원) 및 민간 병원·영상의학클리닉이 주요 구매 채널입니다. 싱가포르 약가 규제는 비교적 자유로운 편이나, 공공 조달은 ALPS(Agency for Logistics and Procurement Services) 채널을 통해 이루어지며 가격 경쟁이 치열합니다."
+      },
+      {
+        "idx": 4,
+        "style": "Normal",
+        "text": "2. Gadvoa Inj. 단가 (시장 기준가)"
+      },
+      {
+        "idx": 5,
+        "style": "Normal",
+        "text": "기준 가격  SGD 95.00"
+      },
+      {
+        "idx": 6,
+        "style": "Normal",
+        "text": "산정 방식  AI 분석 (Claude Haiku) — 글로벌 macrocyclic GBCA 병원공급가 범위 및 레퍼런스 제품 대비 상대 가격 포지셔닝"
+      },
+      {
+        "idx": 7,
+        "style": "Normal",
+        "text": "시장 구분  공공 / 민간"
+      },
+      {
+        "idx": 8,
+        "style": "Normal",
+        "text": "3. 거래처 참고 가격"
+      },
+      {
+        "idx": 9,
+        "style": "Normal",
+        "text": "업체명  BAYER (Germany)"
+      },
+      {
+        "idx": 10,
+        "style": "Normal",
+        "text": "제품명  GADOVIST Injection"
+      },
+      {
+        "idx": 11,
+        "style": "Normal",
+        "text": "성분·함량  Gadobutrol 604.72mg / 7.5mL vial"
+      },
+      {
+        "idx": 12,
+        "style": "Normal",
+        "text": "시장가  SGD 118~125 / vial  (Singapore hospital supply price, 2025 추산)"
+      },
+      {
+        "idx": 13,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 14,
+        "style": "Normal",
+        "text": "업체명  Guerbet (France)"
+      },
+      {
+        "idx": 15,
+        "style": "Normal",
+        "text": "제품명  DOTAREM"
+      },
+      {
+        "idx": 16,
+        "style": "Normal",
+        "text": "성분·함량  Gadoterate meglumine 376.74mg / vial"
+      },
+      {
+        "idx": 17,
+        "style": "Normal",
+        "text": "시장가  SGD 95~110 / vial  (Singapore hospital supply price, 2025 추산)"
+      },
+      {
+        "idx": 18,
+        "style": "Normal",
+        "text": "4. 가격 시나리오"
+      },
+      {
+        "idx": 19,
+        "style": "Normal",
+        "text": "▸ 4-1. 공공 시장  (데이터 소스: ALPS 조달가, MOH Holdings 병원 공급가 참고)"
+      },
+      {
+        "idx": 20,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 21,
+        "style": "Normal",
+        "text": "[저가 진입]  SGD 85.00"
+      },
+      {
+        "idx": 22,
+        "style": "Normal",
+        "text": "근거  레퍼런스 제품 GADOVIST(SGD 120 추정) 대비 70~75% 수준으로 포지셔닝. 공공 조달 채널(ALPS·정부 의료기관)의 높은 가격 민감도를 반영. 신제품 초기 시장 점유율 확보 및 대량 공급 계약 유치에 적합. 초기 3~6개월 한정 프로모션 전략으로 운영 권장."
+      },
+      {
+        "idx": 23,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 85 ÷ (1+GST 9%) ÷ (1+병원공급마진 20%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 40.3/vial"
+      },
+      {
+        "idx": 24,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 25,
+        "style": "Normal",
+        "text": "[기준가]  SGD 95.00"
+      },
+      {
+        "idx": 26,
+        "style": "Normal",
+        "text": "근거  공공 시장 표준 포지셔닝. GADOVIST 대비 80~82% 수준(SGD 95~98). 글로벌 macrocyclic GBCA의 일반적인 경쟁 가격대를 반영하며, 국내 원가 마진(30~40%)과 현지 유통비(15~20%)를 균형 있게 커버. 공공 조달 평가에서 합리적 가성비와 기업 수익성을 동시에 만족시키는 최적 진입가."
+      },
+      {
+        "idx": 27,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 95 ÷ (1+GST 9%) ÷ (1+병원공급마진 20%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 45.1/vial"
+      },
+      {
+        "idx": 28,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 29,
+        "style": "Normal",
+        "text": "[프리미엄]  SGD 108.00"
+      },
+      {
+        "idx": 30,
+        "style": "Normal",
+        "text": "근거  신약·신기술 가치 인정 전략. GADOVIST 대비 90% 수준. 동등 임상 효능·안전성을 보유하면서도 혁신성, 공급 안정성, 제조사 기술 신뢰도 등 부가 가치 강조. 예산 여유 있는 대형 병원·의료법인 조달에 적합. macrocyclic GBCA 구조상 안전성 우위 차별화 포인트 활용 가능."
+      },
+      {
+        "idx": 31,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 108 ÷ (1+GST 9%) ÷ (1+병원공급마진 20%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 51.3/vial"
+      },
+      {
+        "idx": 32,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 33,
+        "style": "Normal",
+        "text": "▸ 4-2. 민간 시장  (데이터 소스: 민간 병원·영상의학클리닉 납품가, 약국 공급가 참고)"
+      },
+      {
+        "idx": 34,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 35,
+        "style": "Normal",
+        "text": "[저가 진입]  SGD 105.00"
+      },
+      {
+        "idx": 36,
+        "style": "Normal",
+        "text": "근거  민간 병원·약국 채널에서 신제품 신뢰도 구축을 위한 초기 진입 전략. GADOVIST 대비 87~88% 수준(SGD 105). 초기 채택 병원 및 영상의학클리닉 확보를 위한 제한적 할인 제공. 의료진 신뢰도 구축과 임상 데이터 생성이 목표인 초기 3~6개월 진입 시나리오."
+      },
+      {
+        "idx": 37,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 105 ÷ (1+GST 9%) ÷ (1+민간마진 30%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 45.7/vial"
+      },
+      {
+        "idx": 38,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 39,
+        "style": "Normal",
+        "text": "[기준가]  SGD 115.00"
+      },
+      {
+        "idx": 40,
+        "style": "Normal",
+        "text": "근거  민간 시장 표준 포지셔닝. GADOVIST 대비 95~96% 수준(SGD 115). 국내 제조원가, 수입·유통비, 합리적 마진을 포함. 사립 대형 병원, 의료 체인, 독립 영상의학클리닉에서 채택 가능한 경쟁력 있는 기준가. DOTAREM(SGD 95~110) 대비 소폭 프리미엄으로 Gadvoa의 macrocyclic 우위 강조."
+      },
+      {
+        "idx": 41,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 115 ÷ (1+GST 9%) ÷ (1+민간마진 30%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 50.0/vial"
+      },
+      {
+        "idx": 42,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 43,
+        "style": "Normal",
+        "text": "[프리미엄]  SGD 130.00"
+      },
+      {
+        "idx": 44,
+        "style": "Normal",
+        "text": "근거  프리미엄 차별화 전략. GADOVIST 대비 108~110% 수준(SGD 130). 원산지 신뢰도(한국 의약품 제조 기술), 임상 우월성 증거, 우수 안전성 프로파일, 고객 서비스(배송 신뢰성·기술 지원) 강조. 상급 종합병원·국제 의료 센터(Gleneagles, Mount Elizabeth 등) 타겟."
+      },
+      {
+        "idx": 45,
+        "style": "Normal",
+        "text": "FOB 수출가 역산식  SGD 130 ÷ (1+GST 9%) ÷ (1+민간마진 30%) ÷ (1+수입·유통비 15%) × 환율(0.74) ≈ USD 56.6/vial"
+      },
+      {
+        "idx": 46,
+        "style": "Normal",
+        "text": ""
+      },
+      {
+        "idx": 47,
+        "style": "Normal",
+        "text": "※ 본 산출 결과는 AI 분석에 기반한 추정치이므로, 최종 의사결정 전 반드시 담당자의 검토 및 확인이 필요합니다."
+      }
+    ],
+    "tables": []
+  },
+  "buyer_list": {
+    "file": "SG_03_바이어리스트.docx",
+    "sections": 1,
+    "paragraph_count": 65,
+    "table_count": 0,
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "None",
+        "text": "싱가포르 바이어 후보 리스트 — Gadvoa Inj."
+      },
+      {
+        "idx": 1,
+        "style": "None",
+        "text": "Singapore  |  2026-04-21"
+      },
+      {
+        "idx": 2,
+        "style": "None",
+        "text": "※ 아래 바이어 후보는 CPHI 등록 및 Perplexity 웹 분석을 통해 도출되었으며, 개별 기업의 싱가포르 진출 현황 및 제품 연관성은 추가 실사가 필요합니다."
+      },
+      {
+        "idx": 3,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 4,
+        "style": "None",
+        "text": "1. 바이어 후보 리스트 (전체 10개사)"
+      },
+      {
+        "idx": 5,
+        "style": "None",
+        "text": "1.  Dishman Carbogen Amcis  |  인도  |  Outsourcing  |  —"
+      },
+      {
+        "idx": 6,
+        "style": "None",
+        "text": "2.  Bluejet Healthcare  |  인도  |  Outsourcing  |  marketing1@bluejethealthcare.com"
+      },
+      {
+        "idx": 7,
+        "style": "None",
+        "text": "3.  CHENGDU BRILLIANT PHARMACEUTICAL GROUP  |  중국  |  Ingredients  |  —"
+      },
+      {
+        "idx": 8,
+        "style": "None",
+        "text": "4.  Hubei Tianshu Pharmaceutical Co., Ltd.  |  중국  |  Ingredients  |  sales@vcarepharmatech.com"
+      },
+      {
+        "idx": 9,
+        "style": "None",
+        "text": "5.  FORMULATRIX International Trading FZ-LLC  |  UAE  |  Bio Pharma  |  hammad.iqbal@formulatrix.com"
+      },
+      {
+        "idx": 10,
+        "style": "None",
+        "text": "6.  SHREE GANESH REMEDIES LTD  |  인도  |  Ingredients  |  parth.kothia@ganeshremedies.com"
+      },
+      {
+        "idx": 11,
+        "style": "None",
+        "text": "7.  Perfect Care  |  루마니아  |  Ingredients  |  contact@perfectcare.ro"
+      },
+      {
+        "idx": 12,
+        "style": "None",
+        "text": "8.  SUNCHEM CO., LTD.  |  중국  |  Outsourcing  |  lisa@sunchemgroup.com"
+      },
+      {
+        "idx": 13,
+        "style": "None",
+        "text": "9.  LUSOCHIMICA  |  이탈리아  |  Ingredients  |  sales@lusochimica.it"
+      },
+      {
+        "idx": 14,
+        "style": "None",
+        "text": "10. TXP Medical Co.Ltd.  |  일본  |  PharmaIT  |  medical-data-service@txpmedical.com"
+      },
+      {
+        "idx": 15,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 16,
+        "style": "None",
+        "text": "2. 우선 접촉 바이어 상세 정보 (상위 3개사)"
+      },
+      {
+        "idx": 17,
+        "style": "None",
+        "text": "※ 하기 3개사는 Gadvoa Inj.의 조영제 성분과 연관성, APAC 지역 네트워크, 싱가포르 진출 가능성을 종합 평가하여 선정하였습니다."
+      },
+      {
+        "idx": 18,
+        "style": "None",
+        "text": "1. Dishman Carbogen Amcis  |  인도 · Outsourcing"
+      },
+      {
+        "idx": 19,
+        "style": "None",
+        "text": "▸ 기업 개요"
+      },
+      {
+        "idx": 20,
+        "style": "None",
+        "text": "인도 아메다바드에 본사를 두고 글로벌 제약 기업을 위한 아웃소싱 파트너로 활동. 제품 포트폴리오 개발·스케일업·제조 서비스 제공. 아시아태평양 지역 포함 글로벌 시장 진출 추진 중이며, Singapore를 포함한 APAC 지역에서 일정 수준의 시장 진출 기반을 확보하고 있습니다."
+      },
+      {
+        "idx": 21,
+        "style": "None",
+        "text": "▸ 추천 이유"
+      },
+      {
+        "idx": 22,
+        "style": "None",
+        "text": "① 매출 규모  연간 매출 약 USD 350M+ 수준(Dishman Carbogen Amcis Ltd. 그룹 기준, FY2023). 다국적 제약사와의 장기 공급 계약 다수 보유."
+      },
+      {
+        "idx": 23,
+        "style": "None",
+        "text": "② 파이프라인  CPHI 등록 제품에 Contrast Media Dyes, Highly Potent APIs 포함. Gadobutrol 계열 조영제 원료 취급 이력 보유. 유사 macrocyclic 화합물 제조 역량 확인."
+      },
+      {
+        "idx": 24,
+        "style": "None",
+        "text": "③ 제조소 보유  인도 내 GMP 인증 제조 시설 보유. EU GMP 및 US FDA 승인 제조소 운영. 위탁 제조(CMO) 및 자체 제조 병행 가능."
+      },
+      {
+        "idx": 25,
+        "style": "None",
+        "text": "④ 수입 경험  싱가포르 포함 APAC 지역 의약품 수입·유통 경험 보유. 다수의 글로벌 제약사에 API 공급 실적 있으며, Singapore 거래 레퍼런스 확인 가능."
+      },
+      {
+        "idx": 26,
+        "style": "None",
+        "text": "⑤ 약국 체인 운영  직접 약국 체인 운영은 없으나, 아시아태평양 지역 주요 병원 및 의약품 유통업체와의 간접 채널 보유. 병원 주사제 채널을 통한 공급 경험 확인 필요."
+      },
+      {
+        "idx": 27,
+        "style": "None",
+        "text": "주소  Bavla, Ahmedabad District, Gujarat, INDIA"
+      },
+      {
+        "idx": 28,
+        "style": "None",
+        "text": "이메일  info@dishman-carbogen.com"
+      },
+      {
+        "idx": 29,
+        "style": "None",
+        "text": "홈페이지  https://imdcal.com/"
+      },
+      {
+        "idx": 30,
+        "style": "None",
+        "text": "기업 규모  직원 약 3,700명 이상. 그룹 연 매출 USD 350M+ (FY2023)"
+      },
+      {
+        "idx": 31,
+        "style": "None",
+        "text": "등록 제품  Soft Gels / Contrast Media Dyes / Generic API / Highly Potent (HiPo) APIs / Vitamin D / Disinfectant API"
+      },
+      {
+        "idx": 32,
+        "style": "None",
+        "text": "※ 출처: Perplexity 분석"
+      },
+      {
+        "idx": 33,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 34,
+        "style": "None",
+        "text": "2. CHENGDU BRILLIANT PHARMACEUTICAL GROUP  |  중국 · Ingredients"
+      },
+      {
+        "idx": 35,
+        "style": "None",
+        "text": "▸ 기업 개요"
+      },
+      {
+        "idx": 36,
+        "style": "None",
+        "text": "쓰촨 르난 제약의 모회사로, 의약 중간체 및 원료의약품(API) 연구개발·제조·판매를 전문으로 하는 고기술 기업. 2013년 설립 이후 조영제·항암제·CNS 계열 API 분야에서 빠르게 성장하고 있으며, CPHI 등록 제품에 Gadobutrol을 직접 포함하고 있어 가도부트롤 원료 공급자로서의 적합성이 가장 높은 후보군입니다."
+      },
+      {
+        "idx": 37,
+        "style": "None",
+        "text": "▸ 추천 이유"
+      },
+      {
+        "idx": 38,
+        "style": "None",
+        "text": "① 매출 규모  설립 초기 기업으로 정확한 매출 공개 데이터가 제한적이나, 그룹사 기준 연간 매출 추산 USD 50~80M 수준. 중국 내 고기술 인증(国家高新技术企业) 보유."
+      },
+      {
+        "idx": 39,
+        "style": "None",
+        "text": "② 파이프라인  CPHI 공식 등록 제품에 Gadobutrol 직접 포함. 추가로 Iopromide, Iodixanol, Ioversol 등 조영제 계열 원료 취급. Gadvoa Inj.와 동일 성분 API 공급 역량 보유로 파이프라인 적합성 최상위."
+      },
+      {
+        "idx": 40,
+        "style": "None",
+        "text": "③ 제조소 보유  청두 하이테크 산업개발구 내 자체 제조 시설 보유. 중국 NMPA 인증 취득. API 제조 및 중간체 합성 전문 설비 운영."
+      },
+      {
+        "idx": 41,
+        "style": "None",
+        "text": "④ 수입 경험  싱가포르 직접 수입 경험이 공개 정보상 미확인. 다만 중국 내 다수의 글로벌 제약사에 API 수출 실적 있으며, 싱가포르 바이어와의 연결을 통한 간접 진출 가능성 존재."
+      },
+      {
+        "idx": 42,
+        "style": "None",
+        "text": "⑤ 약국 체인 운영  약국 체인 운영 없음. 원료의약품(API) 전문 공급사로, 완제의약품 유통보다는 한국유나이티드제약의 Gadvoa 제조에 필요한 원료 안정 공급 파트너로서의 가치가 더 높음."
+      },
+      {
+        "idx": 43,
+        "style": "None",
+        "text": "주소  No. 263, Hexiang 3rd Street, Chengdu Hi-tech Industrial Development Zone, Sichuan CHINA"
+      },
+      {
+        "idx": 44,
+        "style": "None",
+        "text": "전화  +86-135-0035-4375"
+      },
+      {
+        "idx": 45,
+        "style": "None",
+        "text": "홈페이지  http://www.renanpharma.com"
+      },
+      {
+        "idx": 46,
+        "style": "None",
+        "text": "기업 규모  직원 약 200~300명 추산. 설립 2013년."
+      },
+      {
+        "idx": 47,
+        "style": "None",
+        "text": "등록 제품  Gadobutrol / Gadoterate Meglumine / Gadoxetate Disodium / Iopromide / Iodixanol / Ioversol / Iomeprol 등"
+      },
+      {
+        "idx": 48,
+        "style": "None",
+        "text": "※ 출처: Perplexity 분석"
+      },
+      {
+        "idx": 49,
+        "style": "None",
+        "text": ""
+      },
+      {
+        "idx": 50,
+        "style": "None",
+        "text": "3. Bluejet Healthcare  |  인도 · Outsourcing"
+      },
+      {
+        "idx": 51,
+        "style": "None",
+        "text": "▸ 기업 개요"
+      },
+      {
+        "idx": 52,
+        "style": "None",
+        "text": "50년 이상의 제약·의료 산업 경험을 보유한 인도 기반 글로벌 제약 기업. 인공감미료 및 조영제 중간체의 선도 제조업체로, CDMO 서비스(보호된 아미노산 유도체, 펩타이드용 핵심 빌딩 블록, API 및 신약 개발 중간체 제조) 전문. GMP 인증을 보유한 신뢰할 수 있는 파트너사입니다."
+      },
+      {
+        "idx": 53,
+        "style": "None",
+        "text": "▸ 추천 이유"
+      },
+      {
+        "idx": 54,
+        "style": "None",
+        "text": "① 매출 규모  Bluejet Healthcare Ltd. 상장사(NSE: BLUEJET). FY2024 연 매출 약 INR 7,200 Crore(약 USD 860M) 수준. 제약 CDMO 분야 인도 대형사."
+      },
+      {
+        "idx": 55,
+        "style": "None",
+        "text": "② 파이프라인  CPHI 등록 제품에 Intermediates for Contrast Media, Ibanic Acid [3543-72-4] 직접 포함. 조영제 제조에 필요한 핵심 중간체 공급 역량 보유. Gadvoa의 원료 공급 또는 CDMO 파트너십 가능성."
+      },
+      {
+        "idx": 56,
+        "style": "None",
+        "text": "③ 제조소 보유  인도 내 다수의 GMP 인증 제조 시설 운영. 특수화학 합성 및 제약 API 제조 전용 설비 보유. USFDA, PMDA, TGA 등 주요 규제기관 실사 대응 경험."
+      },
+      {
+        "idx": 57,
+        "style": "None",
+        "text": "④ 수입 경험  글로벌 다국적 제약사(Bayer, Bracco, Guerbet 등)에 조영제 중간체 공급 이력 보유로 파악. 싱가포르 포함 아시아 주요 시장 수출 레퍼런스 보유 가능성 있으나 직접 확인 필요."
+      },
+      {
+        "idx": 58,
+        "style": "None",
+        "text": "⑤ 약국 체인 운영  직접 약국 체인 운영 없음. B2B 제조·공급 전문사로 완제의약품 소매 채널보다 원료·중간체 공급 파트너십이 더 적합한 구조."
+      },
+      {
+        "idx": 59,
+        "style": "None",
+        "text": "주소  701-702, 7th Floor, Bhumiraj Costarica, Sector 18, Sanpada, Navi Mumbai, Maharashtra INDIA"
+      },
+      {
+        "idx": 60,
+        "style": "None",
+        "text": "이메일  marketing1@bluejethealthcare.com"
+      },
+      {
+        "idx": 61,
+        "style": "None",
+        "text": "홈페이지  http://www.bluejethealthcare.com"
+      },
+      {
+        "idx": 62,
+        "style": "None",
+        "text": "기업 규모  상장사(NSE: BLUEJET). 직원 약 1,200명. FY2024 연 매출 USD 860M+ 추산."
+      },
+      {
+        "idx": 63,
+        "style": "None",
+        "text": "등록 제품  Intermediates for Contrast Media / Ibanic Acid [3543-72-4] / Artificial Sweeteners (Sodium & Calcium Saccharine) / N-Boc 계열 아미노산 유도체 등"
+      },
+      {
+        "idx": 64,
+        "style": "None",
+        "text": "※ 출처: Perplexity 분석"
+      }
+    ],
+    "tables": []
+  }
+}

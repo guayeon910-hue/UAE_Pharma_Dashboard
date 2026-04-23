@@ -1060,10 +1060,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if analysis is None:
         print("[report] Claude API로 분석 실행 중... (API 키 없으면 미실행 메시지 표시)")
-        from analysis.sg_export_analyzer import analyze_all
+        from analysis.uae_export_analyzer import analyze_all
         analysis = asyncio.run(analyze_all(use_perplexity=not args.no_perplexity))
         # 분석 결과 JSON 저장
-        ana_path = out_dir / f"sg_analysis_{ts}.json"
+        ana_path = out_dir / f"uae_analysis_{ts}.json"
         ana_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"[report] 분석 JSON → {ana_path}")
 
@@ -1084,12 +1084,12 @@ def main(argv: list[str] | None = None) -> int:
     report = build_report(products, generated_at, analysis, references=references)
 
     # JSON 저장
-    json_path = out_dir / f"sg_report_{ts}.json"
+    json_path = out_dir / f"uae_report_{ts}.json"
     json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[report] JSON → {json_path}")
 
     # PDF 저장
-    pdf_path = out_dir / f"sg_report_{ts}.pdf"
+    pdf_path = out_dir / f"uae_report_{ts}.pdf"
     render_pdf(report, pdf_path)
     print(f"[report] PDF  → {pdf_path}")
 

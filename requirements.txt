@@ -11,4 +11,4 @@ anthropic>=0.28
 yfinance>=0.2.36
 pypdf>=4.0
 # 선택: Playwright 실크롤 시 필요
-# playwright>=1.44  # 설치 후: playwright install chromium
+playwright>=1.44  # 설치 후: playwright install chromium
