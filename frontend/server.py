@@ -600,6 +600,88 @@ def _latest_report_pdf() -> Path | None:
     return max(pdfs, key=lambda p: p.stat().st_mtime)
 
 
+def _latest_pdf(pattern: str) -> Path | None:
+    reports_dir = ROOT / "reports"
+    if not reports_dir.exists():
+        return None
+    pdfs = [p for p in reports_dir.glob(pattern) if p.is_file()]
+    if not pdfs:
+        return None
+    return max(pdfs, key=lambda p: p.stat().st_mtime)
+
+
+def _p2_pdf_payload_from_price_result(result: dict[str, Any], market_type: str) -> dict[str, Any]:
+    product = result.get("product") or {}
+    classification = result.get("classification") or {}
+    scenarios = result.get("scenarios") or {}
+    stats = result.get("competitor_stats") or {}
+
+    scenario_rows: list[dict[str, Any]] = []
+    for key in ("aggressive", "average", "conservative"):
+        sc = scenarios.get(key) if isinstance(scenarios, dict) else None
+        if not isinstance(sc, dict):
+            continue
+        price = sc.get("fob_aed")
+        if not isinstance(price, (int, float)):
+            price = sc.get("cif_final_aed")
+        step_bits = []
+        for step in sc.get("steps") or []:
+            label = str(step.get("label", "") or "").strip()
+            value = step.get("value_aed")
+            if label and isinstance(value, (int, float)):
+                step_bits.append(f"{label}: AED {value:,.2f}")
+        formula = " -> ".join(step_bits[-3:]) if step_bits else ""
+        reason = sc.get("error") or formula or "FOB 역산 시나리오 기준으로 산정했습니다."
+        scenario_rows.append({
+            "label": sc.get("label") or key,
+            "price": price,
+            "reason": reason,
+            "formula": formula,
+        })
+
+    avg = scenarios.get("average") if isinstance(scenarios, dict) else {}
+    base_price = avg.get("fob_aed") if isinstance(avg, dict) else None
+    if not isinstance(base_price, (int, float)):
+        base_price = stats.get("median") if isinstance(stats, dict) else None
+
+    notes = list(result.get("notes") or [])
+    warnings = list(classification.get("warnings") or [])
+    rationale = [str(x) for x in notes + warnings if str(x or "").strip()]
+
+    return {
+        "product_name": product.get("trade_name") or "UAE price strategy",
+        "verdict": classification.get("product_kind") or "-",
+        "seg_label": "공공 시장 (Rafed)" if market_type == "public" else "민간 시장",
+        "base_price": base_price,
+        "formula_str": "Retail reference price -> CIF reverse calculation -> freight/insurance -> agent commission -> FOB",
+        "mode_label": "AI 보고서 기반 가격분석" if product.get("inn") else "선택 보고서 기반 가격분석",
+        "scenarios": scenario_rows,
+        "ai_rationale": rationale[:8],
+    }
+
+
+async def _write_p2_pdf_from_price_result(result: dict[str, Any], market_type: str) -> str | None:
+    try:
+        from datetime import datetime, timezone as _tz
+        import re as _re
+        from report_generator import render_p2_pdf
+
+        product = result.get("product") or {}
+        raw_name = str(product.get("trade_name") or "price_strategy")
+        safe_name = _re.sub(r"[^\w가-힣-]+", "_", raw_name).strip("_")[:40] or "price_strategy"
+        ts = datetime.now(_tz.utc).strftime("%Y%m%d_%H%M%S")
+        reports_dir = ROOT / "reports"
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        pdf_name = f"uae_p2_{safe_name}_{ts}.pdf"
+        pdf_path = reports_dir / pdf_name
+        payload = _p2_pdf_payload_from_price_result(result, market_type)
+        await asyncio.to_thread(render_p2_pdf, payload, pdf_path)
+        return pdf_name
+    except Exception as exc:
+        await _emit({"phase": "p2", "message": f"2공정 PDF 생성 실패: {exc}", "level": "warn"})
+        return None
+
+
 class ReportBody(BaseModel):
     run_analysis: bool = False
     use_perplexity: bool = False
@@ -673,6 +755,52 @@ async def download_report(name: str | None = None, inline: bool = False) -> Any:
 
 
 # ── 2공정 가격 전략 PDF ───────────────────────────────────────────────────────
+
+@app.get("/api/report/combined")
+async def download_combined_report() -> Any:
+    reports_dir = ROOT / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+
+    p1 = _latest_report_pdf()
+    p2 = _latest_pdf("uae_p2_*.pdf")
+    p3 = _latest_pdf("uae_buyers_*.pdf")
+
+    missing: list[str] = []
+    if not p1:
+        missing.append("1공정 시장조사 PDF")
+    if not p2:
+        missing.append("2공정 가격전략 PDF")
+    if not p3:
+        if _buyer_task.get("status") == "running":
+            raise HTTPException(status_code=409, detail="3공정 바이어 보고서 PDF가 아직 생성 중입니다. 완료 후 다시 눌러 주세요.")
+        missing.append("3공정 바이어 발굴 PDF")
+    if missing:
+        raise HTTPException(status_code=404, detail="최종 보고서에 필요한 파일이 없습니다: " + ", ".join(missing))
+
+    try:
+        from datetime import datetime, timezone as _tz
+        from pypdf import PdfReader, PdfWriter
+
+        writer = PdfWriter()
+        for path in (p1, p2, p3):
+            reader = PdfReader(str(path))
+            for page in reader.pages:
+                writer.add_page(page)
+
+        out_name = f"uae_final_report_{datetime.now(_tz.utc).strftime('%Y%m%d_%H%M%S')}.pdf"
+        out_path = reports_dir / out_name
+        with out_path.open("wb") as fh:
+            writer.write(fh)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"최종 보고서 병합 실패: {exc}") from exc
+
+    return FileResponse(
+        str(out_path),
+        media_type="application/pdf",
+        filename=out_name,
+        content_disposition_type="attachment",
+    )
+
 
 class P2ReportBody(BaseModel):
     product_name:  str   = ""
@@ -840,6 +968,9 @@ async def api_p2_price_analyze(
 
     if not result.get("ok"):
         return JSONResponse(status_code=400, content=result)
+    pdf_name = await _write_p2_pdf_from_price_result(result, mt)
+    if pdf_name:
+        result["pdf"] = pdf_name
     return result
 
 

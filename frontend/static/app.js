@@ -2030,6 +2030,13 @@ async function _p2PerformRequest(state, overrides = null) {
     _p2LastRequestState = state;
     if (data.ok && data.scenarios) {
       renderP2Result(data);
+      if (data.pdf && typeof _addReportEntry === 'function') {
+        _addReportEntry({
+          trade_name: data.product?.trade_name || '수출가격 전략',
+          inn: data.product?.inn || null,
+          verdict: data.classification?.product_kind || '—',
+        }, data.pdf, 'p2');
+      }
       return;
     }
 

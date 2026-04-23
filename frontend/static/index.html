@@ -507,8 +507,15 @@ function downloadCombinedReport() {
   btn.disabled = true;
   btn.textContent = '생성 중…';
   fetch('/api/report/combined')
-    .then(function(r) {
-      if (!r.ok) throw new Error('not found');
+    .then(async function(r) {
+      if (!r.ok) {
+        var detail = '';
+        try {
+          var data = await r.clone().json();
+          detail = data.detail || data.message || '';
+        } catch (_) {}
+        throw new Error(detail || '최종 보고서를 생성하지 못했습니다.');
+      }
       return r.blob();
     })
     .then(function(blob) {
@@ -523,8 +530,8 @@ function downloadCombinedReport() {
         _addReportEntry({ trade_name: productName, inn: null, verdict: '—' }, '', 'final');
       }
     })
-    .catch(function() {
-      alert('아직 생성된 보고서가 없습니다. 1·2·3 공정을 먼저 완료해 주세요.');
+    .catch(function(err) {
+      alert(err && err.message ? err.message : '아직 생성된 보고서가 없습니다. 1·2·3 공정을 먼저 완료해 주세요.');
     })
     .finally(function() {
       btn.innerHTML = '↓ 최종 보고서 다운로드';
